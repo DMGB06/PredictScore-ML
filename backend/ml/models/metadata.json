@@ -1,0 +1,47 @@
+{
+  "models": {
+    "svr": {
+      "file": "mejor_modelo_avanzado_svr.pkl",
+      "scaler": "scaler_avanzado.pkl",
+      "type": "SVR",
+      "performance": {
+        "r2_score": 0.7561,
+        "training_time": "60s_optimized"
+      },
+      "features": [
+        "study_hours",
+        "attendance",
+        "parental_involvement",
+        "access_to_resources",
+        "extracurricular_activities",
+        "sleep_hours",
+        "previous_scores",
+        "motivation_level",
+        "internet_access",
+        "tutoring_sessions",
+        "family_income",
+        "teacher_quality",
+        "school_type",
+        "peer_influence",
+        "physical_activity",
+        "learning_disabilities",
+        "parental_education_level",
+        "distance_from_home",
+        "gender"
+      ]
+    },
+    "ridge": {
+      "file": "ridge_alpha_10.pkl",
+      "scaler": "scaler.pkl",
+      "type": "Ridge",
+      "performance": {
+        "r2_score": 0.7234,
+        "training_time": "5s"
+      },
+      "use_case": "fallback_model"
+    }
+  },
+  "default_model": "svr",
+  "fallback_model": "ridge",
+  "last_updated": "2025-01-19"
+}
