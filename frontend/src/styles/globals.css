@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-azure-50 via-white to-azure-100 
+           dark:from-dark-bg dark:via-dark-surface dark:to-dark-card 
+           transition-all duration-500 ease-out;
+  }
+  
+  /* Variables CSS para modo oscuro */
+  :root {
+    --glow-color: rgba(59, 130, 246, 0.5);
+    --accent-glow: rgba(99, 102, 241, 0.3);
+  }
+  
+  .dark {
+    --glow-color: rgba(99, 102, 241, 0.6);
+    --accent-glow: rgba(139, 92, 246, 0.4);
+  }
+}
+
+@layer components {
+  /* Botones modernos */
+  .btn-primary {
+    @apply relative overflow-hidden bg-gradient-to-r from-azure-600 to-azure-700 
+           hover:from-azure-700 hover:to-azure-800 
+           dark:from-azure-500 dark:to-azure-600 
+           text-white px-6 py-3 rounded-xl 
+           transition-all duration-300 font-medium 
+           shadow-lg hover:shadow-2xl hover:shadow-azure-500/25
+           transform hover:-translate-y-1;
+  }
+  
+  .btn-secondary {
+    @apply relative bg-white/80 hover:bg-white 
+           dark:bg-dark-card/80 dark:hover:bg-dark-card
+           text-azure-700 dark:text-azure-300 
+           border-2 border-azure-200 dark:border-azure-600/50
+           px-6 py-3 rounded-xl transition-all duration-300 font-medium
+           backdrop-blur-sm hover:backdrop-blur-md
+           shadow-lg hover:shadow-xl
+           transform hover:-translate-y-1;
+  }
+  
+  /* Cards con glassmorphism */
+  .card {
+    @apply relative bg-white/80 dark:bg-dark-card/80 
+           rounded-2xl shadow-xl p-6 
+           border border-azure-100/50 dark:border-azure-700/30
+           backdrop-blur-md hover:backdrop-blur-lg
+           transition-all duration-300
+           hover:shadow-2xl hover:shadow-azure-500/10
+           transform hover:-translate-y-2;
+  }
+  
+  .card::before {
+    content: '';
+    @apply absolute inset-0 rounded-2xl 
+           bg-gradient-to-br from-azure-500/5 to-azure-700/5
+           dark:from-azure-400/10 dark:to-azure-600/10
+           opacity-0 transition-opacity duration-300;
+  }
+  
+  .card:hover::before {
+    @apply opacity-100;
+  }
+  
+  /* Texto con gradiente */
+  .gradient-text {
+    @apply bg-gradient-to-r from-azure-600 via-azure-700 to-azure-800 
+           dark:from-azure-400 dark:via-azure-500 dark:to-azure-600
+           bg-clip-text text-transparent;
+  }
+  
+  /* Header con glassmorphism */
+  .glass-header {
+    @apply bg-white/70 dark:bg-dark-surface/70 
+           backdrop-blur-xl border-b border-azure-200/50 dark:border-azure-700/30
+           transition-all duration-300;
+  }
+  
+  /* Efectos de hover únicos */
+  .hover-glow {
+    @apply transition-all duration-300;
+  }
+  
+  .hover-glow:hover {
+    @apply shadow-2xl shadow-azure-500/25 dark:shadow-azure-400/25;
+  }
+  
+  /* Contenedores con efectos */
+  .neo-container {
+    @apply bg-gradient-to-br from-white/90 to-azure-50/90 
+           dark:from-dark-card/90 dark:to-dark-surface/90
+           backdrop-blur-xl rounded-3xl
+           border border-azure-200/30 dark:border-azure-600/20
+           shadow-xl hover:shadow-2xl
+           transition-all duration-500;
+  }
+}
