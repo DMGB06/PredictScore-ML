@@ -1,0 +1,136 @@
+Trabajo Final del Curso: Proyecto Integrador de Machine Learning
+
+I.
+
+Descripción
+
+Cada grupo desarrollará un prototipo de sistema inteligente aplicando técnicas de Machine Learning
+supervisado, no supervisado, semi-supervisado y/o aprendizaje por refuerzo, utilizando datos de texto,
+imágenes, audio, video o combinaciones (multimodal). Se fomentará la automatización del pipeline de
+procesamiento, modelado y evaluación.
+II.
+
+Objetivo Académico
+
+- Aplicar de forma integrada los conocimientos adquiridos en el curso.
+- Generar un producto académico funcional aplicable a problemas reales.
+III.
+
+Enfoques temáticos principales
+
+El proyecto podrá orientarse a uno o varios de los siguientes enfoques:
+- Visión computacional (procesamiento de imágenes y video).
+- Procesamiento de lenguaje natural (NLP, análisis de texto).
+- Automatización de procesos basados en datos.
+IV.
+
+Algoritmos
+
+Se podrán utilizar los algoritmos y modelos vistos en el curso, incluyendo:
+- Algoritmos de clasificación y regresión (KNN, árboles de decisión, SVM, Random Forest, regresión
+logística, entre otros).
+- Algoritmos de clustering y reducción de dimensionalidad (K-means, DBSCAN, PCA, t-SNE). Algoritmos de aprendizaje semi-supervisado.
+- Algoritmos de aprendizaje por refuerzo (Q-Learning, Deep Q-Learning).
+- Modelos de redes neuronales (MLP, CNN, RNN, LSTM, Autoencoders, GANs, Transformers, según
+corresponda al problema seleccionado).
+Recursos adicionales Ssugeridos:
+−
+
+Se permite el uso de APIs gratuitas de inteligencia artificial (OpenAI, Hugging Face, Google Vision API,
+Azure AI, IBM Watson, entre otros), siempre que su integración sea debidamente documentada.
+
+−
+
+Los grupos pueden implementar opcionalmente una interfaz (web o móvil) que permita cargar datos,
+mostrar predicciones y presentar las métricas.
+
+V.
+
+Entregables:
+
+1. Informe técnico (Documento final):
+o Descripción del problema.
+o Análisis y preparación de datos.
+o Diseño completo del pipeline de ML.
+o Modelos aplicados y justificación.
+o Evaluación de resultados (métricas).
+o Conclusiones y referencias.
+
+2. Pipeline documentado (en Git):
+o Código completo (Jupyter Notebooks o scripts Python).
+o Automatización del flujo de datos, entrenamiento y evaluación.
+o Documentación clara del pipeline (README, instrucciones de ejecución).
+3. Presentación oral (Demo):
+o Exposición de 10 minutos mostrando resultados y funcionamiento del prototipo.
+VI.
+
+Formato de equipos
+
+Grupos de 5 integrantes.
+VII.
+
+Fecha de entrega
+
+Presentación y entrega oficial en la semana 14 del curso.
+Nota
+El grupo que obtenga la mejor calificación en la evaluación de su modelo de aprendizaje automático (según
+las métricas obtenidas en la validación cruzada y pruebas finales), será seleccionado para representar al curso
+en la Feria de Productos Académicos de la Semana 15.
+
+Rubrica de evaluación
+Criterio
+
+Descripción
+
+Puntaje
+Máximo
+
+1. Planteamiento del
+problema
+
+Claridad en la definición, justificación y objetivos del problema.
+
+2 puntos
+
+2. Análisis y preparación Calidad del preprocesamiento, limpieza, integración y selección de 3 puntos
+de datos
+características.
+3. Diseño del pipeline,
+Flujo automatizado, reproducible, código limpio, bien estructurado 6 puntos
+código y documentación y documentado (en Git), con instrucciones claras de ejecución.
+4. Modelado y validación Selección y aplicación adecuada de modelos (incluyendo redes
+de resultados
+neuronales si corresponde), uso correcto de métricas, análisis
+comparativo y justificación técnica de los resultados obtenidos.
+
+5 puntos
+
+5. Integración de APIs o
+recursos externos (si
+aplica)
+
+Integración técnica justificada de APIs de IA o modelos
+preentrenados.
+
+1 punto
+
+6. Presentación oral
+(Demo final)
+
+Claridad de exposición, explicación técnica, discusión de
+resultados y respuestas a preguntas.
+
+3 puntos
+
+BONO OPCIONAL
+(adicional)
+
+Desarrollo de una interfaz (web o móvil) que permita cargar datos, +2 puntos
+mostrar predicciones, reportes y visualizar métricas.
+adicionales
+
+TOTAL
+
+20 puntos
+
+

@@ -5,12 +5,14 @@ import {
   StudentFormData,
   PredictionResult,
   BatchPredictionResult,
+  CSVPredictionResponse,
 } from "@/types/student";
 import { API_ROUTES } from "@/constants";
 import StudentForm from "@/components/ui/StudentForm";
 import PredictionResults from "@/components/ui/PredictionResults";
 import CSVTest from "@/components/ui/CSVTest";
 import BatchResults from "@/components/ui/BatchResults";
+import CSVBatchResults from "@/components/ui/CSVBatchResults";
 import axios from "axios";
 
 const PredictorAcademico = () => {
@@ -39,13 +41,20 @@ const PredictorAcademico = () => {
   const [prediction, setPrediction] = useState<PredictionResult | null>(null);
   const [batchResults, setBatchResults] =
     useState<BatchPredictionResult | null>(null);
+  const [csvResults, setCSVResults] = useState<CSVPredictionResponse | null>(
+    null
+  );
   const [batchStudents, setBatchStudents] = useState<StudentFormData[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"individual" | "batch" | "csv">(
     "individual"
   );
 
-  const handleInputChange = (field: keyof StudentFormData, value: string | number) => {
+  const handleInputChange = (
+    field: keyof StudentFormData,
+    value: string | number
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -69,6 +78,7 @@ const PredictorAcademico = () => {
   const handleBatchPredict = async (students: StudentFormData[]) => {
     setLoading(true);
     setBatchStudents(students);
+    setError(null);
     try {
       const response = await axios.post(API_ROUTES.predictBatch, { students });
       if (response.data.success) {
@@ -76,21 +86,38 @@ const PredictorAcademico = () => {
       }
     } catch (error) {
       console.error("Error en predicción por lotes:", error);
+      setError("Error al procesar predicción por lotes");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleCSVPredictionComplete = (results: CSVPredictionResponse) => {
+    setCSVResults(results);
+    setError(null);
+  };
+
+  const handleCSVError = (errorMessage: string) => {
+    setError(errorMessage);
+    setCSVResults(null);
+  };
+
   const resetResults = () => {
     setPrediction(null);
     setBatchResults(null);
+    setCSVResults(null);
     setBatchStudents([]);
+    setError(null);
   };
 
   const tabs = [
-    { id: "individual", label: "👤 Predicción Individual", icon: "🎯" },
-    { id: "batch", label: "👥 Análisis por Lotes", icon: "📊" },
-    { id: "csv", label: "📁 Datos Reales", icon: "🧪" },
+    {
+      id: "individual" as const,
+      label: "👤 Predicción Individual",
+      icon: "🎯",
+    },
+    { id: "batch" as const, label: "👥 Análisis por Lotes", icon: "📊" },
+    { id: "csv" as const, label: "📁 Datos Reales", icon: "🧪" },
   ];
 
   return (
@@ -129,7 +156,7 @@ const PredictorAcademico = () => {
                 <button
                   key={tab.id}
                   onClick={() => {
-                    setActiveTab(tab.id as "individual" | "batch");
+                    setActiveTab(tab.id);
                     resetResults();
                   }}
                   className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${
@@ -269,14 +296,23 @@ const PredictorAcademico = () => {
 
           {activeTab === "csv" && (
             <div className="space-y-6">
-              <CSVTest onDataLoaded={handleBatchPredict} />
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-red-600">❌</span>
+                    <h4 className="font-semibold text-red-700">Error</h4>
+                  </div>
+                  <p className="text-red-600 mt-1">{error}</p>
+                </div>
+              )}
 
-              {batchResults && (
-                <BatchResults
-                  results={batchResults}
-                  students={batchStudents}
-                  onReset={resetResults}
-                />
+              <CSVTest
+                onPredictionComplete={handleCSVPredictionComplete}
+                onError={handleCSVError}
+              />
+
+              {csvResults && (
+                <CSVBatchResults results={csvResults} onReset={resetResults} />
               )}
             </div>
           )}

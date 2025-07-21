@@ -1,16 +1,16 @@
 """
-PredictScore-ML Backend - API Principal Simplificada
-==================================================
+PredictScore-ML Backend - API Principal Optimizada
+=================================================
 
-API FastAPI simplificada para predicción de rendimiento académico
+API FastAPI optimizada para predicción de rendimiento académico
 usando únicamente modelo SVR aplicando principios SOLID, KISS y DRY.
 
 Características:
 - Solo modelo SVR (el mejor según análisis)
-- 2 endpoints únicos: Individual y Dataset Completo
-- Predicción vectorizada optimizada para datasets grandes (1000-2000+ estudiantes)
-- Manejo robusto de errores y logging optimizado
-- Principios de Clean Code y UX mejorada
+- Predicción vectorizada para lotes grandes
+- Manejo robusto de errores
+- Logging optimizado
+- Principios de Clean Code
 
 Autor: Equipo Grupo 4
 Fecha: 2025
@@ -18,7 +18,6 @@ Fecha: 2025
 
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
 import uvicorn
 import logging
 import time
@@ -42,12 +41,12 @@ logger = logging.getLogger(__name__)
 class Config:
     """Configuración centralizada (SOLID - Single Responsibility)"""
     APP_NAME = "PredictScore-ML API"
-    APP_VERSION = "3.1.0"
+    APP_VERSION = "3.0.0"
     HOST = "127.0.0.1"
     PORT = 8001
     DEBUG = True
-    MAX_WORKERS = 6  # Optimizado para datasets grandes
-    CHUNK_SIZE = 1000  # Procesar en chunks de 1000 para eficiencia
+    MAX_WORKERS = 4  # Para procesamiento paralelo
+    BATCH_SIZE = 500  # Tamaño de lote para optimización
     
     ALLOWED_ORIGINS = [
         "http://localhost:3000",
@@ -66,35 +65,13 @@ class Config:
 
 config = Config()
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Manejo del ciclo de vida de la aplicación usando el nuevo sistema de FastAPI"""
-    # Startup
-    logger.info("🚀 Iniciando PredictScore-ML API Optimizada...")
-    
-    # Cargar modelo SVR
-    if predictor.load_model():
-        logger.info("✅ Sistema listo - Modelo SVR cargado")
-    else:
-        logger.warning("⚠️ Sistema en modo degradado - Predicción básica disponible")
-    
-    logger.info(f"📍 API disponible en: http://{config.HOST}:{config.PORT}")
-    logger.info(f"📚 Documentación: http://{config.HOST}:{config.PORT}/docs")
-    
-    yield
-    
-    # Shutdown
-    logger.info("🔄 Cerrando PredictScore-ML API...")
-    predictor.executor.shutdown(wait=True)
-
-# Crear aplicación FastAPI con lifespan
+# Crear aplicación FastAPI
 app = FastAPI(
     title=config.APP_NAME,
     description="API optimizada para predicción académica usando SVR",
     version=config.APP_VERSION,
     docs_url="/docs",
-    redoc_url="/redoc",
-    lifespan=lifespan
+    redoc_url="/redoc"
 )
 
 # Configurar CORS
@@ -110,7 +87,7 @@ app.add_middleware(
 import joblib
 
 class OptimizedSVRPredictor:
-    """Predictor optimizado usando únicamente SVR para datasets grandes (SOLID - Single Responsibility)"""
+    """Predictor optimizado usando únicamente SVR (SOLID - Single Responsibility)"""
     
     def __init__(self):
         self.model = None
@@ -166,12 +143,9 @@ class OptimizedSVRPredictor:
             logger.error(f"❌ Error cargando modelo SVR: {e}")
             return False
     
-    def _prepare_features_dataset(self, students_data: List[Dict[str, Any]]) -> np.ndarray:
-        """Prepara features para predicción de dataset completo (DRY + Optimización para datasets grandes)"""
+    def _prepare_features_batch(self, students_data: List[Dict[str, Any]]) -> np.ndarray:
+        """Prepara features para predicción en lote (DRY + Optimización)"""
         try:
-            total_students = len(students_data)
-            logger.info(f"📊 Preparando features para {total_students} estudiantes")
-            
             features_batch = []
             
             for student_data in students_data:
@@ -224,65 +198,52 @@ class OptimizedSVRPredictor:
                 
                 features_batch.append(features)
             
-            result = np.array(features_batch)
-            logger.info(f"✅ Features preparadas: {result.shape}")
-            return result
+            return np.array(features_batch)
             
         except Exception as e:
             logger.error(f"❌ Error preparando features: {e}")
             # Retornar datos por defecto
             return np.ones((len(students_data), 17))
     
-    async def predict_dataset_async(self, students_data: List[Dict[str, Any]]) -> List[float]:
-        """Predicción asíncrona de dataset completo optimizada para datasets grandes (1000-2000+ estudiantes)"""
-        total_students = len(students_data)
-        logger.info(f"🚀 Iniciando predicción de dataset completo: {total_students} estudiantes")
-        
+    async def predict_batch_async(self, students_data: List[Dict[str, Any]]) -> List[float]:
+        """Predicción asíncrona en lote optimizada"""
         if not self.is_loaded:
             logger.warning("⚠️ Modelo no cargado, usando predicción básica")
             return [self._predict_basic(data) for data in students_data]
         
         try:
-            start_time = time.time()
-            
-            # Para datasets grandes, procesar en chunks para optimizar memoria
-            chunk_size = config.CHUNK_SIZE
+            # Dividir en lotes para optimización de memoria
+            batch_size = config.BATCH_SIZE
             all_predictions = []
             
-            for i in range(0, total_students, chunk_size):
-                chunk = students_data[i:i + chunk_size]
-                chunk_size_actual = len(chunk)
-                
-                logger.info(f"📊 Procesando chunk {i//chunk_size + 1}: {chunk_size_actual} estudiantes")
+            for i in range(0, len(students_data), batch_size):
+                batch = students_data[i:i + batch_size]
                 
                 # Ejecutar en hilo separado para no bloquear
                 loop = asyncio.get_event_loop()
                 predictions = await loop.run_in_executor(
                     self.executor, 
-                    self._predict_dataset_sync, 
-                    chunk
+                    self._predict_batch_sync, 
+                    batch
                 )
                 all_predictions.extend(predictions)
                 
-                # Log de progreso para datasets grandes
-                progress = min(i + chunk_size, total_students)
-                percentage = (progress / total_students) * 100
-                logger.info(f"📈 Progreso: {progress}/{total_students} estudiantes ({percentage:.1f}%)")
-            
-            processing_time = time.time() - start_time
-            logger.info(f"✅ Dataset completo procesado en {processing_time:.2f}s ({total_students/processing_time:.1f} estudiantes/s)")
+                # Log de progreso para lotes grandes
+                if len(students_data) > 100:
+                    progress = min(i + batch_size, len(students_data))
+                    logger.info(f"📊 Progreso: {progress}/{len(students_data)} estudiantes")
             
             return all_predictions
             
         except Exception as e:
-            logger.error(f"❌ Error en predicción de dataset: {e}")
+            logger.error(f"❌ Error en predicción por lotes: {e}")
             return [self._predict_basic(data) for data in students_data]
     
-    def _predict_dataset_sync(self, students_data: List[Dict[str, Any]]) -> List[float]:
-        """Predicción síncrona para un chunk del dataset"""
+    def _predict_batch_sync(self, students_data: List[Dict[str, Any]]) -> List[float]:
+        """Predicción síncrona para un lote"""
         try:
             # Preparar features
-            X = self._prepare_features_dataset(students_data)
+            X = self._prepare_features_batch(students_data)
             
             # Escalar
             X_scaled = self.scaler.transform(X)
@@ -348,7 +309,25 @@ class OptimizedSVRPredictor:
 # Instancia global del predictor
 predictor = OptimizedSVRPredictor()
 
-# Crear aplicación FastAPI con lifespan
+@app.on_event("startup")
+async def startup():
+    """Inicialización optimizada de la aplicación"""
+    logger.info("🚀 Iniciando PredictScore-ML API Optimizada...")
+    
+    # Cargar modelo SVR
+    if predictor.load_model():
+        logger.info("✅ Sistema listo - Modelo SVR cargado")
+    else:
+        logger.warning("⚠️ Sistema en modo degradado - Predicción básica disponible")
+    
+    logger.info(f"📍 API disponible en: http://{config.HOST}:{config.PORT}")
+    logger.info(f"📚 Documentación: http://{config.HOST}:{config.PORT}/docs")
+
+@app.on_event("shutdown")
+async def shutdown():
+    """Limpieza al cerrar"""
+    logger.info("🔄 Cerrando PredictScore-ML API...")
+    predictor.executor.shutdown(wait=True)
 
 # === ENDPOINTS OPTIMIZADOS ===
 
@@ -374,23 +353,20 @@ async def health_check():
         "features_count": len(config.SVR_FEATURES)
     }
 
-@app.get("/api/v1/predictions/dataset-format")
-async def get_dataset_format():
-    """Documentación del formato de dataset (CSV) requerido"""
+@app.get("/api/v1/predictions/csv-format")
+async def get_csv_format():
+    """Documentación del formato CSV requerido"""
     return {
-        "description": "Formato requerido para dataset completo (CSV) de predicción académica",
+        "description": "Formato requerido para CSV de predicción por lotes",
         "required_columns": config.SVR_FEATURES,
         "total_columns": len(config.SVR_FEATURES),
         "notes": [
             "NO incluir columna 'Exam_Score' (es la variable a predecir)",
-            "Primera fila debe contener nombres de columnas exactos",
-            "Datos deben estar ya procesados (numéricos 0-4 principalmente)",
-            "Usar comas como separador",
-            "Codificación UTF-8 recomendada",
-            "Optimizado para datasets grandes (1000-2000+ estudiantes)"
+            "Primera fila debe contener nombres de columnas",
+            "Datos deben estar ya procesados (numéricos)",
+            "Usar comas como separador"
         ],
-        "example_first_row": "Hours_Studied,Attendance,Parental_Involvement,Access_to_Resources,...",
-        "performance": "Puede procesar 1000+ estudiantes en segundos"
+        "example_first_row": "Hours_Studied,Attendance,Parental_Involvement,Access_to_Resources,..."
     }
 
 # Esquemas de datos
@@ -428,7 +404,7 @@ async def predict_single(student: StudentData):
         student_data['family_education_support'] = 1.0 if student_data['parental_education_level'] in ['Bachelor', 'Master', 'PhD'] else 0.0
         
         # Predecir
-        predictions = await predictor.predict_dataset_async([student_data])
+        predictions = await predictor.predict_batch_async([student_data])
         prediction = predictions[0]
         
         processing_time = time.time() - start_time
@@ -455,9 +431,9 @@ async def predict_single(student: StudentData):
         logger.error(f"❌ Error en predicción individual: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/api/v1/predictions/predict-dataset")
-async def predict_dataset(file: UploadFile = File(...)):
-    """Predicción de dataset completo desde CSV optimizada para datasets grandes"""
+@app.post("/api/v1/predictions/predict-csv")
+async def predict_csv(file: UploadFile = File(...)):
+    """Predicción masiva desde CSV optimizada"""
     try:
         start_time = time.time()
         
@@ -469,37 +445,30 @@ async def predict_dataset(file: UploadFile = File(...)):
         content = await file.read()
         df = pd.read_csv(io.StringIO(content.decode('utf-8')))
         
-        total_students = len(df)
-        logger.info(f"� Dataset cargado: {file.filename} ({total_students} estudiantes)")
+        logger.info(f"📊 Procesando CSV: {len(df)} estudiantes")
         
         # Verificar columnas requeridas
         if 'Exam_Score' in df.columns:
-            logger.info("📝 Eliminando columna Exam_Score (variable objetivo)")
+            logger.info("📝 Eliminando columna Exam_Score para predicción")
             df = df.drop('Exam_Score', axis=1)
         
         missing_cols = [col for col in config.SVR_FEATURES if col not in df.columns]
         if missing_cols:
-            logger.error(f"❌ Columnas faltantes en dataset: {missing_cols}")
+            logger.error(f"❌ Columnas faltantes: {missing_cols}")
             raise HTTPException(
                 status_code=400, 
-                detail={
-                    "error": "Columnas faltantes en el dataset",
-                    "missing_columns": missing_cols,
-                    "required_columns": config.SVR_FEATURES,
-                    "help": "Use /api/v1/predictions/dataset-format para ver el formato requerido"
-                }
+                detail=f"CSV debe contener: {config.SVR_FEATURES}"
             )
         
         # Convertir DataFrame a lista de diccionarios
         students_data = df.to_dict('records')
         
-        # Predicción optimizada para dataset completo
-        logger.info(f"🚀 Iniciando predicción de dataset completo: {total_students} estudiantes")
-        predictions = await predictor.predict_dataset_async(students_data)
+        # Predicción en lote optimizada
+        predictions = await predictor.predict_batch_async(students_data)
         
         processing_time = time.time() - start_time
         
-        # Generar resultados completos
+        # Generar resultados
         results = []
         for i, prediction in enumerate(predictions):
             prediction_20 = prediction * 0.2
@@ -517,20 +486,17 @@ async def predict_dataset(file: UploadFile = File(...)):
                 "original_data": students_data[i]
             })
         
-        # Estadísticas del dataset
+        # Estadísticas
         predictions_array = np.array(predictions)
         letter_counts = {"AD": 0, "A": 0, "B": 0, "C": 0}
         for result in results:
             letter_counts[result["letter_grade"]] += 1
         
-        percentages = {k: (v/total_students)*100 for k, v in letter_counts.items()}
+        total = len(results)
+        percentages = {k: (v/total)*100 for k, v in letter_counts.items()}
         
         response = {
-            "dataset_info": {
-                "filename": file.filename,
-                "total_students": total_students,
-                "processed_successfully": len(results)
-            },
+            "total_students": total,
             "results": results,
             "statistics": {
                 "average_score_100": round(predictions_array.mean(), 2),
@@ -541,37 +507,25 @@ async def predict_dataset(file: UploadFile = File(...)):
                 "min_score_100": round(predictions_array.min(), 2),
                 "std_score_100": round(predictions_array.std(), 2)
             },
-            "performance": {
-                "model_used": "SVR",
-                "processing_time_seconds": round(processing_time, 3),
-                "students_per_second": round(total_students / processing_time, 1),
-                "timestamp": time.time()
-            }
+            "model_used": "SVR",
+            "processing_time": round(processing_time, 3),
+            "timestamp": time.time()
         }
         
-        logger.info(f"✅ Dataset procesado exitosamente: {total_students} estudiantes en {processing_time:.2f}s ({total_students/processing_time:.1f} est/s)")
+        logger.info(f"✅ CSV procesado: {total} estudiantes en {processing_time:.2f}s")
         return response
         
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"❌ Error procesando dataset: {e}")
-        raise HTTPException(
-            status_code=500, 
-            detail={
-                "error": "Error interno procesando el dataset",
-                "message": str(e),
-                "help": "Verifique que el CSV tenga el formato correcto"
-            }
-        )
+        logger.error(f"❌ Error procesando CSV: {e}")
+        raise HTTPException(status_code=500, detail=f"Error procesando archivo: {str(e)}")
 
 if __name__ == "__main__":
-    print("🚀 Iniciando PredictScore-ML API Simplificada...")
+    print("🚀 Iniciando PredictScore-ML API Optimizada...")
     print(f"📍 URL: http://{config.HOST}:{config.PORT}")
     print(f"📚 Docs: http://{config.HOST}:{config.PORT}/docs")
     print(f"🤖 Modelo: SVR (Support Vector Regression)")
-    print(f"📊 Endpoints: Individual + Dataset Completo")
-    print(f"⚡ Optimizado para datasets grandes (1000-2000+ estudiantes)")
     
     try:
         uvicorn.run(

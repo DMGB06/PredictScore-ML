@@ -1,0 +1,384 @@
+FACULTAD DE INGENIERÍA
+ESCUELA PROFESIONAL DE INGENIERÍA DE SISTEMAS
+
+TEMA:
+“Sistema Predictivo de Rendimiento Académico para educación secundaria: Implementación de ML para la Detección Temprana de Riesgo Académico”
+DOCENTE:
+M. Sc. Magaly Roxana Arangüena Yllanes
+
+ASIGNATURA:
+MACHINE LEARNING
+ESTUDIANTES:
+Candela Vargas Aitor Baruc
+Godoy Bautista Denilson Miguel
+Molina Lazaro Eduardo Jeampier
+Napanga Ruiz Jhonatan Jesus
+Quispe Romani Angela Isabel
+Quito Gamboa, Jhon Neper
+
+San Vicente, Cañete 2025
+Índice
+1. Planteamiento del Problema	3
+1.1. Pregunta General	3
+1.2. Objetivo General	3
+1.3. Objetivos Específicos	3
+1.4. Justificación	4
+2. Análisis y preparación de datos	5
+2.1. Exploración Inicial y Calidad del Dataset	5
+2.2. Limpieza de Datos	6
+2.3. Transformación de Datos	7
+2.4. Selección de Características	7
+2.5. Ingeniería de Características	8
+2.6. División del Dataset	8
+2.7. Resultados del Preprocesamiento	9
+3. Modelo y validación de resultados	10
+3.1. Modelos Evaluados y Configuración	10
+3.2. Resultados Comparativos	11
+3.3. Justificación Técnica del Modelo Seleccionado	12
+3.4. Descripción del Modelo SVR	12
+3.5. Métricas de Evaluación	12
+3.6. Optimización del Modelo SVR	13
+3.6.1. Metodología de Optimización	13
+3.6.2. Configuración de Hiperparámetros SVR	13
+3.6.3. Resultados de la Optimización SVR	13
+3.7. Resultados del Modelo SVR	14
+3.8. Conclusión del Modelado	14
+4. Integración de APIs o Recursos Externos	16
+
+
+Planteamiento del Problema
+En el sistema educativo de nivel secundario, se ha identificado que aproximadamente el 20% de los estudiantes presenta un bajo rendimiento académico al finalizar cada semestre. Este bajo rendimiento constituye un problema generalizado que afecta tanto a los estudiantes como al ambiente educativo en general, generando una sobrecarga de clases de recuperación, desmotivación entre los alumnos y una disminución del tiempo disponible para otros estudiantes que también requieren atención.
+A pesar de que las instituciones educativas cuentan con información valiosa sobre los estudiantes, como su rendimiento académico previo, asistencia, horas de estudio, participación extracurricular y el nivel educativo de sus padres, estos datos no se utilizan de forma sistemática ni automatizada para identificar a los estudiantes en riesgo de bajo rendimiento.
+Es necesario desarrollar una herramienta que utilice estos datos para predecir de manera anticipada el rendimiento académico, permitiendo intervenciones tempranas y personalizadas que optimicen los recursos educativos y mejoren el desempeño de los estudiantes en el nivel secundario.
+1.1. Pregunta General
+¿Cómo predecir el rendimiento académico final de los estudiantes de educación secundaria utilizando técnicas de aprendizaje automático, a partir de factores personales, académicos y familiares?
+1.2. Objetivo General
+Desarrollar un sistema predictivo basado en aprendizaje automático supervisado que permita anticipar el rendimiento académico final de los estudiantes de educación secundaria, utilizando como variables factores personales, académicos y familiares.
+1.3. Objetivos Específicos
+Analizar y preparar el dataset StudentPerformanceFactors.csv mediante procesos de limpieza, transformación e ingeniería de características para garantizar la calidad de los datos.
+Desarrollar y comparar modelos de aprendizaje automático (lineales y no lineales) para la predicción del rendimiento académico, evaluando su desempeño mediante métricas estándar.
+Seleccionar el modelo óptimo considerando precisión, interpretabilidad y capacidad de generalización para implementar el sistema predictivo.
+Implementar un pipeline automatizado que genere predicciones y reportes de apoyo para la detección temprana de estudiantes en riesgo académico.
+1.4. Justificación 
+La capacidad de predecir el rendimiento académico de los estudiantes de manera anticipada ofrece importantes beneficios para las instituciones educativas de nivel secundario. Esta herramienta permitiría identificar a los estudiantes en riesgo de bajo rendimiento, facilitando la implementación de intervenciones personalizadas, como tutorías focalizadas, apoyo psicopedagógico o programas de reforzamiento académico. Estas acciones podrían mejorar significativamente el rendimiento en diversas asignaturas, así como la motivación y el compromiso de los estudiantes, reduciendo las tasas de reprobación y mejorando la calidad educativa integral.
+Desde la perspectiva técnica, este proyecto representa una oportunidad valiosa para aplicar técnicas avanzadas de Machine Learning en el ámbito educativo, transformando datos académicos en soluciones prácticas y escalables. La automatización del proceso mediante un pipeline predictivo ofrece una solución eficiente y replicable que puede implementarse en múltiples instituciones educativas de nivel secundario, contribuyendo a la optimización de recursos educativos y mejorando la gestión del rendimiento académico a nivel sistémico.
+
+
+
+
+
+
+
+
+Análisis y preparación de datos
+2.1. Exploración Inicial y Calidad del Dataset
+Se llevó a cabo una revisión general del dataset StudentPerformanceFactors.csv, el cual contiene datos académicos, personales y familiares de estudiantes de secundaria. Esta etapa tuvo como objetivo identificar la estructura de las variables, comprender su distribución y detectar posibles inconsistencias o datos con bajo aporte al modelo predictivo.
+A continuación, se resumen los principales hallazgos:
+Aspecto Analizado
+Observación
+Total de variables
+20 variables en total (numéricas, categóricas y booleanas)
+Variables numéricas
+Hours_Studied, Attendance, Sleep_Hours, Previous_Scores, Exam_Score, Tutoring_Sessions, Physical_Activity
+Variables Booleanas
+Internet_Access, Extracurricular_Activities, Learning_Disabilities
+Variables categóricas 
+Parental_Involvement, Access_to_Resources, Motivation_Level, Family_Income, Teacher_Quality, School_Type, Peer_Influence, Parental_Education_Level, Distance_from_Home, Gender 
+Valores nulos detectados
+235 valores nulos (0.2 % del total), distribuidos en 3 variables
+Teacher_Quality (78), Parental_Education_Level (90) y Distance_from_Home (67)
+Nivel de motivación predominante
+Medio (50.7%), seguido por bajo (29.3 %)
+Acceso a internet
+92 % tiene acceso.
+Variables con mayor correlación
+Hours_Studied, Attendance, Previous_Scores, Tutoring_Sessions
+Variables con baja correlación
+Gender, School_Type, Sleep_Hours, Physical_Activity, Internet_Access (r ≤ 0.05)
+
+Durante esta exploración se identificaron variables con correlaciones muy bajas respecto a la variable objetivo (Exam_Score), las cuales podrían ser consideradas irrelevantes para el modelo predictivo. Este hallazgo se tomó en cuenta en la etapa de limpieza y selección de características.
+2.2. Limpieza de Datos
+Luego de explorar el conjunto de datos, se identificaron inconsistencias y elementos irrelevantes que requerían limpieza para asegurar la calidad del modelo predictivo. Esta etapa incluyó la imputación de valores faltantes, corrección de formatos, y eliminación de variables con bajo aporte informativo.
+Tipo de limpieza
+Acción aplicada
+Detección de errores de entrada
+Se reemplazaron valores inválidos o inconsistentes (ej. strings vacíos o fuera de rango) por NaN y se imputaron
+Imputación de valores nulos
+Se imputaron 235 valores faltantes utilizando:
+• Moda para variables categóricas
+Eliminación de duplicados
+Se verificó que no existieran registros duplicados en el dataset
+Revisión de tipos de datos
+Se estandarizaron los tipos de datos (ej. categóricos mal codificados como numéricos)
+Eliminación de variables irrelevantes
+Se descartaron 5 variables con correlación ≤ 0.05 respecto a 
+Exam_Score:
+Gender
+School_Type
+Sleep_Hours
+Physical_Activity
+Internet_Access
+
+Después de esta etapa, el conjunto de datos quedó sin valores nulos, libre de inconsistencias y reducido a las variables con mayor poder explicativo.
+2.3. Transformación de Datos
+En esta etapa se transformaron las variables para que todas pudieran ser interpretadas correctamente por los algoritmos de aprendizaje automático, manteniendo una representación numérica homogénea.
+Las variables numéricas continuas (Hours_Studied, Attendance, Previous_Scores, Tutoring_Sessions) fueron escaladas mediante StandardScaler, con el fin de normalizarlas a una misma escala.
+Las variables categóricas fueron transformadas a través de codificación ordinal, asignando valores enteros a cada categoría según un orden establecido (por ejemplo: bajo = 0, medio = 1, alto = 2). Este enfoque se aplicó a variables como Motivation_Level, Parental_Education_Level, Peer_Influence, entre otras.
+El resultado fue un dataset completamente numérico, y listo para ser procesado por los modelos de regresión en etapas posteriores.
+2.4. Selección de Características
+En este caso no aplicaremos selección adicional, pues ya eliminamos columnas irrelevantes en el paso anterior y mantuvimos todas las variables restantes.
+No se aplicará selección de características porque:
+   - Ya filtramos columnas con baja correlación
+   - Las variables restantes aportan información relevante 
+para predecir Exam Score.
+
+2.5. Ingeniería de Características
+Se generaron nuevas variables a partir de la combinación de atributos existentes, con el fin de representar mejor el contexto del estudiante y mejorar la capacidad predictiva del modelo. Estas variables fueron:
+Study_Efficiency: Mide la eficiencia del tiempo de estudio. Se calculó como el cociente entre Hours_Studied y Previous_Scores + 1, para evitar divisiones por cero. Permite observar cuánto estudia un alumno en relación a su rendimiento previo.
+
+
+High_Support: Variable binaria que vale 1 si el estudiante recibe más tutorías que la mediana (Tutoring_Sessions) y además tiene Access_to_Resources clasificado como “High”. Representa un entorno escolar con buen apoyo académico.
+
+
+Family_Education_Support: También binaria, vale 1 si Parental_Education_Level es “Postgraduate” y Parental_Involvement es “High”. Indica un contexto familiar con alto nivel educativo y participación activa en la educación del alumno.
+
+
+Estas nuevas características fueron añadidas al dataset final, enriqueciendo la información disponible sin introducir variables artificiales ni ruido innecesario.
+2.6. División del Dataset
+Para evaluar el rendimiento del modelo de forma objetiva y evitar el sobreajuste, el dataset final fue dividido en dos subconjuntos:
+70 % para entrenamiento: utilizado para ajustar los parámetros del modelo.
+
+
+30 % para prueba: reservado para validar la capacidad de generalización del modelo sobre datos no vistos.
+
+
+La división se realizó utilizando la función train_test_split de la librería scikit-learn, con una semilla aleatoria fija (random_state) para asegurar la reproducibilidad de los resultados.
+Esta estrategia permitió una evaluación robusta del desempeño del modelo, simulando un entorno real en el que se debe predecir el rendimiento de estudiantes nuevos a partir de sus características.
+
+2.7. Resultados del Preprocesamiento
+Luego de aplicar todas las etapas del preprocesamiento, el dataset quedó completamente preparado para ser utilizado en los modelos de Machine Learning. 
+Total de variables finales: 17 variables predictoras + 1 variable objetivo (Exam_Score).
+
+
+Sin valores nulos: todas las observaciones fueron imputadas correctamente o filtradas según el caso.
+
+
+Variables numéricas escaladas: Hours_Studied, Attendance, Previous_Scores, Tutoring_Sessions se normalizaron con StandardScaler.
+
+
+Variables categóricas codificadas: se transformaron mediante codificación ordinal para mantener una estructura numérica compacta.
+
+
+Nuevas variables generadas: Study_Efficiency, High_Support, Family_Education_Support, basadas en relaciones pedagógicas relevantes.
+
+
+Estructura final del dataset: completamente numérica, sin columnas redundantes, y lista para integrarse en un pipeline automatizado.
+
+
+
+
+
+
+Modelo y validación de resultados
+3.1. Modelos Evaluados y Configuración
+Se evaluaron 8 algoritmos representativos de diferentes familias metodológicas con sus respectivos hiperparámetros optimizados:
+Familia
+Modelo
+Descripción
+Hiper Parámetros Optimizados
+Lineales
+Linear Regression
+Modelo base sin regularización
+Sin hiper parámetros
+Ridge Regression
+Regularización L2
+alpha: [0.001, 0.01, 0.1, 1, 10, 100]
+Lasso Regression
+Regularización L1
+alpha: [0.001, 0.01, 0.1, 1, 10], max_iter: [1000, 2000]
+Ensemble
+Random Forest
+Bagging con árboles
+n_estimators: [50, 100, 200], max_depth: [None, 10, 20]
+Gradient Boosting
+Boosting secuencial
+n_estimators: [50, 100, 200], learning_rate: [0.01, 0.1, 0.2]
+XGBoost
+Gradient boosting
+n_estimators: [50, 100, 200], max_depth: [3, 6, 9], learning_rate: [0.01, 0.1, 0.2]
+Avanzados
+SVR
+Vectores de soporte, kernel RBF
+C: [0.1, 1, 10, 100], epsilon: [0.01, 0.1, 0.2, 0.5], gamma: ['scale', 'auto', 0.001, 0.01], kernel: ['rbf', 'linear', 'poly']
+MLP
+Red neuronal multicapa
+hidden_layer_sizes: [(50,), (100,), (100,50)], alpha: [0.0001, 0.001, 0.01], max_iter: [200, 500, 1000]
+
+3.2. Resultados Comparativos
+En esta sección se presentan los resultados obtenidos tras entrenar y evaluar múltiples algoritmos de regresión, tanto lineales como no lineales. La comparación se realizó considerando las métricas de evaluación establecidas (R², RMSE, MAE, MSE), así como su capacidad de generalización y complejidad.
+Modelos lineales evaluados:
+Regresión Lineal Simple (LinearRegression) 
+Regresión Ridge (con regularización L2) 
+Regresión Lasso (con regularización L1)
+Modelos no lineales evaluados:
+SVR (Support Vector Regression con kernel RBF)
+XGBoost
+Gradient Boosting
+Random Forest
+MLP (Red Neuronal Multicapa)
+Modelo
+R²
+RMSE
+MAE
+MSE
+Overfitting
+Tipo
+Linear Regression
+0.6925
+2.055
+1.035
+4.225
+Bajo
+Lineal
+Ridge
+0.6926
+2.055
+1.035
+4.224
+Bajo
+Lineal
+Lasso
+0.6925
+2.055
+1.035
+4.224
+Bajo
+Lineal
+SVR (RBF kernel)
+0.7561
+1.831
+0.623
+3.352
+Bajo
+No Lineal
+XGBoost
+0.7480
+1.861
+1.448
+3.464
+Bajo
+No Lineal
+Gradient Boosting
+0.7460
+1.868
+1.452
+3.491
+Bajo
+No Lineal
+Random Forest
+0.6716
+2.124
+1.580
+4.512
+Alto
+No Lineal
+MLP Neural Network
+0.6608
+2.159
+1.620
+4.664
+Bajo
+No Lineal
+
+
+3.3. Justificación Técnica del Modelo Seleccionado
+La selección de SVR como modelo principal se justifica por:
+Capacidad no lineal: Modela efectivamente las relaciones complejas entre factores socioeconómicos y rendimiento académico en el contexto peruano.
+Robustez estadística: Resistente a outliers, común en datos educativos con alta variabilidad socioeconómica.
+Generalización superior: Mejor capacidad predictiva comparado con modelos lineales tradicionales.
+Flexibilidad: El kernel RBF se adapta a los patrones específicos del sistema educativo peruano.
+3.4. Descripción del Modelo SVR
+Para el análisis del rendimiento estudiantil en el contexto educativo peruano, se implementó Support Vector Regression (SVR) como modelo principal de predicción. Esta decisión se fundamentó en la capacidad superior de SVR para capturar relaciones no lineales complejas entre los factores socioeconómicos, familiares y académicos que influyen en el rendimiento de estudiantes peruanos.
+El modelo SVR se configuró con kernel RBF (Radial Basis Function), permitiendo modelar patrones no lineales característicos del sistema educativo peruano, donde factores como el nivel socioeconómico, acceso a recursos educativos y contexto familiar presentan interacciones complejas con el rendimiento académico.
+Esta aproximación resulta especialmente relevante para el contexto peruano, donde la diversidad geográfica, cultural y socioeconómica genera patrones de rendimiento estudiantil que no siguen relaciones lineales simples.
+3.5. Métricas de Evaluación
+Para evaluar el rendimiento del modelo SVR en la predicción del rendimiento estudiantil peruano, se utilizaron métricas estándar que permiten cuantificar la precisión predictiva:
+R² Score (Coeficiente de determinación)
+Mide la proporción de varianza en las calificaciones explicada por el modelo
+Utilizada como métrica principal para evaluar el ajuste del modelo SVR
+RMSE (Root Mean Squared Error)
+Penaliza fuertemente los errores grandes en predicciones
+Crucial para evitar predicciones muy alejadas del rendimiento real de estudiantes
+
+MAE (Mean Absolute Error)
+Representa el promedio del error absoluto en las predicciones
+Permite interpretación directa del error promedio en puntos de calificación
+MSE (Mean Squared Error)
+Utilizado como criterio de optimización interna del algoritmo SVR
+3.6. Optimización del Modelo SVR
+3.6.1. Metodología de Optimización
+Se implementó una estrategia sistemática para optimizar el modelo SVR:
+Búsqueda de hiperparámetros: GridSearchCV para explorar exhaustivamente los parámetros del modelo SVR
+Validación cruzada: 5-fold cross-validation para asegurar resultados robustos
+Métricas de evaluación: R² Score como métrica principal, complementada con RMSE y MAE
+Reproducibilidad: Semilla aleatoria fija (random_state = 42) para resultados consistentes
+3.6.2. Configuración de Hiperparámetros SVR
+El modelo SVR se optimizó explorando los siguientes hiperparámetros:
+Parámetro
+Rango de Valores Evaluados
+C
+[0.1, 1, 10, 100]
+epsilon
+[0.01, 0.1, 0.2]
+gamma
+['scale', 'auto']
+kernel
+['rbf', 'poly']
+
+3.6.3. Resultados de la Optimización SVR
+El proceso de optimización del modelo SVR reveló la configuración óptima para predecir el rendimiento estudiantil:
+
+Configuración Óptima del SVR:
+Kernel: RBF (Radial Basis Function)
+C: 10 (parámetro de regularización)
+Epsilon: 0.1 (tolerancia del margen)
+Gamma: 'scale' (coeficiente del kernel RBF)
+3.7. Resultados del Modelo SVR
+Métricas de Rendimiento
+El modelo SVR optimizado logró los siguientes resultados en la predicción del rendimiento estudiantil:
+Métrica
+Valor
+Interpretación
+R² Score
+0.7561
+Explica el 75.61% de la varianza en las calificaciones
+RMSE
+1.831
+Error promedio de 1.83 puntos en escala de calificación
+MAE
+0.623
+Error absoluto medio de 0.62 puntos
+MSE
+3.352
+Error cuadrático medio optimizado
+
+Análisis de Resultados
+Alta capacidad predictiva: El R² de 0.7561 indica que el modelo SVR explica más del 75% de la variación en el rendimiento estudiantil, demostrando su efectividad para el contexto educativo peruano.
+Precisión en predicciones: Un RMSE de 1.831 significa que las predicciones tienen un margen de error promedio de aproximadamente 1.8 puntos, lo cual es altamente aceptable en escalas de calificación educativa.
+Bajo sobreajuste: La diferencia mínima entre métricas de entrenamiento y prueba confirma que el modelo generaliza bien a nuevos estudiantes peruanos.
+Robustez del modelo: La configuración con kernel RBF permite capturar las complejas interacciones entre factores socioeconómicos y académicos característicos del sistema educativo peruano.
+3.8. Conclusión del Modelado
+El modelo SVR demostró ser la herramienta más efectiva para predecir el rendimiento estudiantil en el contexto educativo peruano, logrando un balance óptimo entre precisión predictiva, capacidad de generalización y robustez estadística.
+Los resultados obtenidos (R² = 0.7561, RMSE = 1.831) confirman que este enfoque puede ser implementado efectivamente en instituciones educativas peruanas para:
+Identificar estudiantes en riesgo académico
+Optimizar estrategias de apoyo educativo
+Mejorar la toma de decisiones pedagógicas basada en datos
+La metodología desarrollada puede ser replicada y adaptada en diferentes contextos del sistema educativo peruano, contribuyendo a la mejora de la calidad educativa nacional.
+
+
+
+
+
+
+Integración de APIs o Recursos Externos
+

@@ -31,6 +31,54 @@ export interface PredictionResult {
   };
 }
 
+// Interfaz para un resultado individual de predicción CSV
+export interface CSVPredictionRow {
+  estudiante_id: number;
+  prediction_100: number;
+  prediction_20: number;
+  letter_grade: string;
+  original_data: Record<string, any>;
+}
+
+// Interfaz para estadísticas de distribución
+export interface PredictionStatistics {
+  average_score_100: number;
+  average_score_20: number;
+  distribution: {
+    AD: number;
+    A: number;
+    B: number;
+    C: number;
+  };
+  percentages: {
+    AD: number;
+    A: number;
+    B: number;
+    C: number;
+  };
+  max_score_100: number;
+  min_score_100: number;
+  std_score_100: number;
+}
+
+// Interfaz para respuesta de predicción de dataset completo del backend
+export interface CSVPredictionResponse {
+  dataset_info: {
+    filename: string;
+    total_students: number;
+    processed_successfully: number;
+  };
+  results: CSVPredictionRow[];
+  statistics: PredictionStatistics;
+  performance: {
+    model_used: string;
+    processing_time_seconds: number;
+    students_per_second: number;
+    timestamp: number;
+  };
+}
+
+// Mantener la interfaz anterior para compatibilidad
 export interface BatchPredictionResult {
   success: boolean;
   data: {
