@@ -65,52 +65,52 @@ export const ROUTES = {
 // Rutas de la API
 export const API_ROUTES = {
   predict: `${APP_CONFIG.apiUrl}/api/v1/predictions/predict`,
-  predictBatch: `${APP_CONFIG.apiUrl}/api/v1/predictions/predict-batch`,
+  predictBatch: `${APP_CONFIG.apiUrl}/api/v1/predictions/predict-dataset`,
   health: `${APP_CONFIG.apiUrl}/health`,
 } as const;
 
-// Categorías de rendimiento académico
+// Categorías de rendimiento académico (Escala 20 puntos)
 export const PERFORMANCE_CATEGORIES = {
   excellent: {
-    label: "Excelente",
-    color: "text-green-700",
-    bgColor: "bg-green-50",
-    borderColor: "border-green-300",
-    indicator: "●",
-    min: 85,
-    max: 100,
+    label: "AD - Excelente",
+    color: "text-emerald-700",
+    bgColor: "bg-emerald-50",
+    borderColor: "border-emerald-300",
+    indicator: "🏆",
+    min: 18,
+    max: 20,
     description:
-      "Rendimiento sobresaliente. Estudiante de alto nivel académico.",
+      "Rendimiento sobresaliente. Estudiante excepcional de alto nivel académico.",
   },
   good: {
-    label: "Bueno",
+    label: "A - Muy Bueno",
     color: "text-blue-700",
     bgColor: "bg-blue-50",
     borderColor: "border-blue-300",
-    indicator: "●",
-    min: 75,
-    max: 84,
-    description: "Buen rendimiento académico. Cumple con las expectativas.",
+    indicator: "⭐",
+    min: 14,
+    max: 17,
+    description: "Muy buen rendimiento académico. Supera las expectativas.",
   },
   average: {
-    label: "Regular",
-    color: "text-yellow-700",
-    bgColor: "bg-yellow-50",
-    borderColor: "border-yellow-300",
-    indicator: "●",
-    min: 65,
-    max: 74,
-    description: "Rendimiento promedio. Requiere atención y seguimiento.",
+    label: "B - Bueno",
+    color: "text-amber-700",
+    bgColor: "bg-amber-50",
+    borderColor: "border-amber-300",
+    indicator: "📘",
+    min: 10,
+    max: 13,
+    description: "Buen rendimiento. Cumple con los estándares esperados.",
   },
   poor: {
-    label: "Deficiente",
+    label: "C - Regular",
     color: "text-red-700",
     bgColor: "bg-red-50",
     borderColor: "border-red-300",
-    indicator: "●",
+    indicator: "⚠️",
     min: 0,
-    max: 64,
-    description: "Bajo rendimiento. Necesita intervención inmediata.",
+    max: 10,
+    description: "Rendimiento regular. Requiere atención y apoyo adicional.",
   },
 } as const;
 
@@ -135,4 +135,116 @@ export const FORM_OPTIONS = {
   ],
   distance_from_home: ["Near", "Moderate", "Far"],
   gender: ["Male", "Female"],
+} as const;
+
+// Perfiles predefinidos para autocompletado (OPTIMIZADOS para el modelo actual)
+export const STUDENT_PROFILES = {
+  excellent_ad: {
+    name: "Estudiante Excepcional (AD)",
+    description: "Perfil extremo optimizado para obtener AD (18-20)",
+    icon: "🏆",
+    color: "from-emerald-500 to-emerald-600",
+    data: {
+      study_hours: 15, // Extremadamente alto
+      attendance: 100, // Perfecto
+      previous_scores: 98, // Casi perfecto
+      parental_involvement: "High",
+      access_to_resources: "High",
+      extracurricular_activities: "Yes",
+      sleep_hours: 8,
+      motivation_level: "High",
+      internet_access: "Yes",
+      tutoring_sessions: 5, // Muy alto
+      family_income: "High",
+      teacher_quality: "High",
+      school_type: "Private",
+      peer_influence: "Positive",
+      physical_activity: 8, // Óptimo
+      learning_disabilities: "No",
+      parental_education_level: "PhD", // Máximo nivel
+      distance_from_home: "Near",
+      gender: "Female",
+    },
+  },
+  good_a: {
+    name: "Estudiante Destacado (A)",
+    description: "Perfil optimizado para obtener A (14-17)",
+    icon: "⭐",
+    color: "from-blue-500 to-blue-600",
+    data: {
+      study_hours: 10,
+      attendance: 95,
+      previous_scores: 88,
+      parental_involvement: "High",
+      access_to_resources: "High", // Subido de Medium
+      extracurricular_activities: "Yes",
+      sleep_hours: 8,
+      motivation_level: "High",
+      internet_access: "Yes",
+      tutoring_sessions: 3, // Aumentado
+      family_income: "High", // Subido de Medium
+      teacher_quality: "High",
+      school_type: "Private", // Cambiado de Public
+      peer_influence: "Positive",
+      physical_activity: 6, // Aumentado
+      learning_disabilities: "No",
+      parental_education_level: "Master", // Subido de Bachelor
+      distance_from_home: "Near",
+      gender: "Male",
+    },
+  },
+  average_b: {
+    name: "Estudiante Promedio (B)",
+    description: "Perfil típico que obtiene B (10-13)",
+    icon: "📘",
+    color: "from-amber-500 to-amber-600",
+    data: {
+      study_hours: 6, // Aumentado de 5
+      attendance: 85, // Aumentado de 80
+      previous_scores: 75, // Aumentado de 70
+      parental_involvement: "Medium",
+      access_to_resources: "Medium",
+      extracurricular_activities: "Yes", // Cambiado de No
+      sleep_hours: 7,
+      motivation_level: "Medium",
+      internet_access: "Yes",
+      tutoring_sessions: 2, // Aumentado de 1
+      family_income: "Medium",
+      teacher_quality: "Medium",
+      school_type: "Public",
+      peer_influence: "Positive", // Cambiado de Neutral
+      physical_activity: 4, // Aumentado de 3
+      learning_disabilities: "No",
+      parental_education_level: "Bachelor", // Subido de High School
+      distance_from_home: "Near", // Cambiado de Moderate
+      gender: "Female",
+    },
+  },
+  regular_c: {
+    name: "Estudiante en Riesgo (C)",
+    description: "Perfil que obtiene C (0-10) - Necesita apoyo",
+    icon: "⚠️",
+    color: "from-red-500 to-red-600",
+    data: {
+      study_hours: 3, // Aumentado de 2
+      attendance: 70, // Aumentado de 65
+      previous_scores: 60, // Aumentado de 55
+      parental_involvement: "Low",
+      access_to_resources: "Low",
+      extracurricular_activities: "No",
+      sleep_hours: 6,
+      motivation_level: "Low",
+      internet_access: "No",
+      tutoring_sessions: 0,
+      family_income: "Low",
+      teacher_quality: "Low",
+      school_type: "Public",
+      peer_influence: "Negative",
+      physical_activity: 2, // Aumentado de 1
+      learning_disabilities: "Yes",
+      parental_education_level: "High School",
+      distance_from_home: "Far",
+      gender: "Male",
+    },
+  },
 } as const;

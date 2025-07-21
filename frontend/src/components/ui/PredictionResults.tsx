@@ -11,7 +11,14 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({
   result,
   onReset,
 }) => {
-  const { prediction, confidence, model_used, processing_time } = result.data;
+  const {
+    prediction_100,
+    prediction_20,
+    letter_grade,
+    confidence,
+    model_used,
+    processing_time,
+  } = result;
 
   const getConfidenceColor = (confidence: string) => {
     switch (confidence.toLowerCase()) {
@@ -26,22 +33,28 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({
     }
   };
 
-  const getRecommendations = (score: number, confidence: string) => {
+  const getRecommendations = (
+    score_100: number,
+    score_20: number,
+    letter: string,
+    confidence: string
+  ) => {
     const recommendations = [];
 
-    if (score >= 85) {
+    if (letter === "AD") {
       recommendations.push("Mantener el excelente rendimiento actual");
       recommendations.push("Considerar programas de enriquecimiento académico");
       recommendations.push("Puede servir como tutor para otros estudiantes");
-    } else if (score >= 75) {
+    } else if (letter === "A") {
       recommendations.push("Seguir mejorando con estrategias de estudio");
       recommendations.push("Mantener la motivación y disciplina");
       recommendations.push("Buscar recursos adicionales en áreas específicas");
-    } else if (score >= 65) {
+    } else if (letter === "B") {
       recommendations.push("Requiere atención y seguimiento cercano");
       recommendations.push("Considerar sesiones de tutoría adicionales");
       recommendations.push("Revisar hábitos de estudio y planificación");
     } else {
+      // C
       recommendations.push("Intervención inmediata necesaria");
       recommendations.push("Involucrar a la familia en el proceso");
       recommendations.push(
@@ -59,7 +72,12 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({
     return recommendations;
   };
 
-  const recommendations = getRecommendations(prediction, confidence);
+  const recommendations = getRecommendations(
+    prediction_100,
+    prediction_20,
+    letter_grade,
+    confidence
+  );
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mt-6">
@@ -82,10 +100,28 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({
             Puntuación Predicha
           </h4>
           <PerformanceIndicator
-            score={prediction}
+            score={prediction_20}
             showDescription={true}
             size="lg"
           />
+
+          {/* Mostrar ambas escalas */}
+          <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+            <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+              <div className="text-blue-600 font-medium">Escala 20</div>
+              <div className="text-lg font-bold text-blue-800">
+                {prediction_20.toFixed(1)}
+              </div>
+              <div className="text-xs text-blue-600">{letter_grade}</div>
+            </div>
+            <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+              <div className="text-gray-600 font-medium">Escala 100</div>
+              <div className="text-lg font-bold text-gray-800">
+                {prediction_100.toFixed(1)}
+              </div>
+              <div className="text-xs text-gray-600">Referencia</div>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -102,9 +138,9 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({
                 {confidence}
               </span>
               <span className="text-xs">
-                {confidence === "high"
+                {confidence === "High"
                   ? "(85-100%)"
-                  : confidence === "medium"
+                  : confidence === "Medium"
                   ? "(60-84%)"
                   : "(< 60%)"}
               </span>
@@ -146,31 +182,31 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({
       {/* Gráfico de Progreso Visual */}
       <div className="border-t pt-6 mt-6">
         <h4 className="text-lg font-semibold text-gray-800 mb-4">
-          Escala de Rendimiento
+          Escala de Rendimiento (Escala 20)
         </h4>
         <div className="relative">
           <div className="flex h-8 rounded-lg overflow-hidden border">
             <div className="flex-1 bg-red-200 flex items-center justify-center text-xs font-medium text-red-800">
-              0-64 Deficiente
+              0-10 C
             </div>
-            <div className="flex-1 bg-yellow-200 flex items-center justify-center text-xs font-medium text-yellow-800">
-              65-74 Regular
+            <div className="flex-1 bg-amber-200 flex items-center justify-center text-xs font-medium text-amber-800">
+              10-13 B
             </div>
             <div className="flex-1 bg-blue-200 flex items-center justify-center text-xs font-medium text-blue-800">
-              75-84 Bueno
+              14-17 A
             </div>
-            <div className="flex-1 bg-green-200 flex items-center justify-center text-xs font-medium text-green-800">
-              85-100 Excelente
+            <div className="flex-1 bg-emerald-200 flex items-center justify-center text-xs font-medium text-emerald-800">
+              18-20 AD
             </div>
           </div>
 
           {/* Indicador de posición */}
           <div
             className="absolute top-0 bottom-0 w-2 bg-gray-800 rounded transform -translate-x-1"
-            style={{ left: `${prediction}%` }}
+            style={{ left: `${(prediction_20 / 20) * 100}%` }}
           >
             <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded">
-              {prediction.toFixed(1)}
+              {prediction_20.toFixed(1)}
             </div>
           </div>
         </div>

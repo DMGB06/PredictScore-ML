@@ -5,29 +5,29 @@
       "scaler": "scaler_avanzado.pkl",
       "type": "SVR",
       "performance": {
-        "r2_score": 0.7561,
-        "training_time": "60s_optimized"
+        "r2_score": 0.6784,
+        "mae": 0.87,
+        "rmse": 2.34,
+        "training_time": "24.4s"
       },
       "features": [
-        "study_hours",
-        "attendance",
-        "parental_involvement",
-        "access_to_resources",
-        "extracurricular_activities",
-        "sleep_hours",
-        "previous_scores",
-        "motivation_level",
-        "internet_access",
-        "tutoring_sessions",
-        "family_income",
-        "teacher_quality",
-        "school_type",
-        "peer_influence",
-        "physical_activity",
-        "learning_disabilities",
-        "parental_education_level",
-        "distance_from_home",
-        "gender"
+        "Hours_Studied",
+        "Attendance",
+        "Parental_Involvement",
+        "Access_to_Resources",
+        "Extracurricular_Activities",
+        "Previous_Scores",
+        "Motivation_Level",
+        "Tutoring_Sessions",
+        "Family_Income",
+        "Teacher_Quality",
+        "Peer_Influence",
+        "Learning_Disabilities",
+        "Parental_Education_Level",
+        "Distance_from_Home",
+        "Study_Efficiency",
+        "High_Support",
+        "Family_Education_Support"
       ]
     },
     "ridge": {
@@ -43,5 +43,5 @@
   },
   "default_model": "svr",
   "fallback_model": "ridge",
-  "last_updated": "2025-01-19"
+  "last_updated": "2025-07-21 04:46:12"
 }

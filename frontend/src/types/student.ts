@@ -21,14 +21,13 @@ export interface StudentFormData {
 }
 
 export interface PredictionResult {
-  success: boolean;
-  data: {
-    prediction: number;
-    confidence: string;
-    model_used: string;
-    processing_time: number;
-    timestamp: number;
-  };
+  prediction_100: number;
+  prediction_20: number;
+  letter_grade: string;
+  confidence: string;
+  model_used: string;
+  processing_time: number;
+  timestamp: number;
 }
 
 // Interfaz para un resultado individual de predicción CSV
@@ -37,7 +36,7 @@ export interface CSVPredictionRow {
   prediction_100: number;
   prediction_20: number;
   letter_grade: string;
-  original_data: Record<string, any>;
+  original_data: Record<string, unknown>;
 }
 
 // Interfaz para estadísticas de distribución

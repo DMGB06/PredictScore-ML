@@ -12,17 +12,20 @@ const PerformanceIndicator: React.FC<PerformanceIndicatorProps> = ({
   showDescription = false,
   size = "md",
 }) => {
-  const getPerformanceCategory = (score: number) => {
-    if (score >= PERFORMANCE_CATEGORIES.excellent.min)
+  // El score ya viene en escala 20, no necesita conversión
+  const score20 = score;
+
+  const getPerformanceCategory = (score20: number) => {
+    if (score20 >= PERFORMANCE_CATEGORIES.excellent.min)
       return PERFORMANCE_CATEGORIES.excellent;
-    if (score >= PERFORMANCE_CATEGORIES.good.min)
+    if (score20 >= PERFORMANCE_CATEGORIES.good.min)
       return PERFORMANCE_CATEGORIES.good;
-    if (score >= PERFORMANCE_CATEGORIES.average.min)
+    if (score20 >= PERFORMANCE_CATEGORIES.average.min)
       return PERFORMANCE_CATEGORIES.average;
     return PERFORMANCE_CATEGORIES.poor;
   };
 
-  const category = getPerformanceCategory(score);
+  const category = getPerformanceCategory(score20);
 
   const sizeClasses = {
     sm: "px-2 py-1 text-xs",
@@ -32,12 +35,15 @@ const PerformanceIndicator: React.FC<PerformanceIndicatorProps> = ({
 
   return (
     <div
-      className={`inline-flex items-center gap-2 rounded-lg border-2 ${category.bgColor} ${category.borderColor} ${sizeClasses[size]}`}
+      className={`inline-flex items-center gap-3 rounded-lg border-2 ${category.bgColor} ${category.borderColor} ${sizeClasses[size]}`}
     >
-      <span className={`text-lg ${category.color}`}>{category.indicator}</span>
+      <span className="text-2xl">{category.indicator}</span>
       <div className="flex flex-col">
-        <div className={`font-semibold ${category.color}`}>
-          {score.toFixed(1)} - {category.label}
+        <div className={`font-bold ${category.color} text-lg`}>
+          {score20.toFixed(1)}/20 - {category.label}
+        </div>
+        <div className={`text-xs ${category.color} opacity-70`}>
+          Escala 100: {(score20 * 5).toFixed(1)}
         </div>
         {showDescription && (
           <div className={`text-xs ${category.color} opacity-80 mt-1`}>
