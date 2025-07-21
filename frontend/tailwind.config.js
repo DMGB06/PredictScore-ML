@@ -1,11 +1,11 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  darkMode: 'selector', // Actualizado para Tailwind 4
+  darkMode: 'selector',
   theme: {
     extend: {
       colors: {
@@ -22,29 +22,20 @@ module.exports = {
           900: '#222949',
           950: '#1a1f3a',
         },
-        // Colores específicos para dark mode - Esquema moderno
         dark: {
-          bg: '#0a0b1e',        // Azul muy oscuro, más sofisticado
-          surface: '#1a1b3a',   // Superficie con tinte azul
-          card: '#252759',      // Cards con contraste mejorado
-          text: '#f1f5f9',      // Texto más brillante
-          muted: '#94a3b8',     // Texto secundario
-          accent: '#3b82f6',    // Azul vibrante para acentos
-          border: '#334155',    // Bordes sutiles
-          hover: '#2d3985',     // Estados hover
+          bg: '#0a0b1e',
+          surface: '#1a1b3a',
+          card: '#252759',
+          text: '#f1f5f9',
+          muted: '#94a3b8',
+          accent: '#3b82f6',
+          border: '#334155',
+          hover: '#2d3985',
         },
-        // Gradientes modernos para dark mode
-        'dark-gradient': {
-          primary: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%)',
-          secondary: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
-          accent: 'linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%)',
-        }
       },
-      // Efectos glassmorphism
       backdropBlur: {
         xs: '2px',
       },
-      // Animaciones personalizadas
       animation: {
         'float': 'float 6s ease-in-out infinite',
         'glow': 'glow 2s ease-in-out infinite alternate',
@@ -73,3 +64,5 @@ module.exports = {
   },
   plugins: [],
 }
+
+export default config
