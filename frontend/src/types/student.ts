@@ -37,7 +37,7 @@ export interface CSVPredictionRow {
   prediction_100: number;
   prediction_20: number;
   letter_grade: string;
-  original_data: Record<string, any>;
+  original_data: Record<string, string | number>;
 }
 
 // Interfaz para estadísticas de distribución
@@ -61,6 +61,21 @@ export interface PredictionStatistics {
   std_score_100: number;
 }
 
+// Interfaz para recomendaciones de IA
+export interface AIRecommendations {
+  status: string;
+  general_recommendations: string;
+  priority_areas: string[];
+  action_plan: Array<{
+    phase: string;
+    action: string;
+    target: string;
+    responsible: string;
+  }>;
+  ai_powered: boolean;
+  note?: string;
+}
+
 // Interfaz para respuesta de predicción de dataset completo del backend
 export interface CSVPredictionResponse {
   dataset_info: {
@@ -76,6 +91,7 @@ export interface CSVPredictionResponse {
     students_per_second: number;
     timestamp: number;
   };
+  recommendations?: AIRecommendations;
 }
 
 // Mantener la interfaz anterior para compatibilidad

@@ -30,6 +30,10 @@ from typing import Dict, List, Any, Optional
 from pathlib import Path
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
 
 # Configurar logging optimizado
 logging.basicConfig(
@@ -105,6 +109,10 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+# Incluir rutas de recomendaciones
+from routes.recommendations import router as recommendations_router
+app.include_router(recommendations_router)
 
 # Importar dependencias ML
 import joblib
@@ -446,7 +454,7 @@ async def predict_single(student: StudentData):
             "prediction_20": round(prediction_20, 2),
             "letter_grade": letter_grade,
             "confidence": "High" if predictor.is_loaded else "Medium",
-            "model_used": "SVR",
+            "ml_model_used": "SVR",
             "processing_time": round(processing_time, 3),
             "timestamp": time.time()
         }
@@ -542,12 +550,62 @@ async def predict_dataset(file: UploadFile = File(...)):
                 "std_score_100": round(predictions_array.std(), 2)
             },
             "performance": {
-                "model_used": "SVR",
+                "ml_model_used": "SVR",
                 "processing_time_seconds": round(processing_time, 3),
                 "students_per_second": round(total_students / processing_time, 1),
                 "timestamp": time.time()
             }
         }
+        
+        # Generar recomendaciones automáticas con IA
+        try:
+            logger.info("🤖 Generando recomendaciones con IA...")
+            from services.openai_service import recommendation_service
+            
+            # Preparar datos para recomendaciones
+            predictions_for_ai = []
+            for i, result in enumerate(results):
+                pred_data = {
+                    "predicted_score": result["prediction_100"],
+                    "student_id": result["estudiante_id"],
+                }
+                # Añadir datos originales si están disponibles
+                original = result.get("original_data", {})
+                pred_data.update({
+                    "study_hours": original.get("Hours_Studied", 0),
+                    "sleep_hours": original.get("Sleep_Hours", 7),
+                    "attendance": original.get("Attendance", 85),
+                    "previous_scores": original.get("Previous_Scores", 70),
+                    "tutoring_sessions": original.get("Tutoring_Sessions", 0)
+                })
+                predictions_for_ai.append(pred_data)
+            
+            # Generar recomendaciones
+            recommendations_result = recommendation_service.generate_general_recommendations(predictions_for_ai)
+            
+            # Añadir recomendaciones a la respuesta
+            response["recommendations"] = {
+                "status": recommendations_result.get("status", "success"),
+                "general_recommendations": recommendations_result.get("general_recommendations", ""),
+                "priority_areas": recommendations_result.get("priority_areas", []),
+                "action_plan": recommendations_result.get("action_plan", []),
+                "ai_powered": recommendations_result.get("status") != "fallback",
+                "note": recommendations_result.get("note")
+            }
+            
+            logger.info("✅ Recomendaciones IA generadas exitosamente")
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error generando recomendaciones IA: {e}")
+            # Continuar sin recomendaciones IA
+            response["recommendations"] = {
+                "status": "error",
+                "general_recommendations": "Las recomendaciones con IA no están disponibles en este momento.",
+                "priority_areas": ["Revisar configuración de IA"],
+                "action_plan": [],
+                "ai_powered": False,
+                "note": f"Error: {str(e)}"
+            }
         
         logger.info(f"✅ Dataset procesado exitosamente: {total_students} estudiantes en {processing_time:.2f}s ({total_students/processing_time:.1f} est/s)")
         return response

@@ -12,6 +12,10 @@ Fecha: 2025
 import os
 from typing import List
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
 
 class Settings:
     """
@@ -72,6 +76,7 @@ class Settings:
     PLOTLY_API_KEY = os.getenv("PLOTLY_API_KEY", "")
     PLOTLY_USERNAME = os.getenv("PLOTLY_USERNAME", "")
     HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
     
     # File upload settings
     MAX_FILE_SIZE_MB = 10

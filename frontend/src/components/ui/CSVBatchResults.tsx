@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { CSVPredictionResponse } from "@/types/student";
+import AIRecommendationsComponent from "./AIRecommendations";
 
 interface CSVBatchResultsProps {
   results: CSVPredictionResponse;
@@ -63,7 +64,7 @@ const CSVBatchResults: React.FC<CSVBatchResultsProps> = ({
 
   // Filtrar y ordenar datos
   const filteredAndSortedData = useMemo(() => {
-    let filtered = predictions.filter((item) => {
+    const filtered = predictions.filter((item) => {
       const matchesSearch =
         item.estudiante_id.toString().includes(searchTerm) ||
         item.prediction_100.toString().includes(searchTerm);
@@ -73,7 +74,7 @@ const CSVBatchResults: React.FC<CSVBatchResultsProps> = ({
     });
 
     return filtered.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: string | number, bValue: string | number;
 
       switch (sortBy) {
         case "id":
@@ -461,7 +462,7 @@ const CSVBatchResults: React.FC<CSVBatchResultsProps> = ({
               </label>
               <select
                 value={recordsPerPage}
-                onChange={(e) => setCurrentPage(1)}
+                onChange={() => setCurrentPage(1)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value={25}>25</option>
@@ -900,6 +901,13 @@ const CSVBatchResults: React.FC<CSVBatchResultsProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Sección de Recomendaciones IA */}
+      {results.recommendations && (
+        <div className="mt-8">
+          <AIRecommendationsComponent recommendations={results.recommendations} />
+        </div>
+      )}
     </div>
   );
 };

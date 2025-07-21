@@ -29,8 +29,9 @@ class StudentDataInput(BaseModel):
     Parental_Education_Level: str = Field(..., description="Parents' education level")
     Distance_from_Home: str = Field(..., description="Distance from school to home")
 
-    class Config:
-        json_schema_extra = {
+    model_config = {
+        "protected_namespaces": (),
+        "json_schema_extra": {
             "example": {
                 "Hours_Studied": 20,
                 "Attendance": 85.5,
@@ -48,13 +49,16 @@ class StudentDataInput(BaseModel):
                 "Distance_from_Home": "Near"
             }
         }
+    }
 
 class PredictionRequest(BaseModel):
     """Request for single prediction"""
     session_id: str = Field(..., description="User session identifier")
     user_name: Optional[str] = Field("Usuario", description="User display name")
     student_data: StudentDataInput
-    model_type: Optional[str] = Field("ridge", description="ML model to use")
+    ml_model_type: Optional[str] = Field("ridge", description="ML model to use")
+    
+    model_config = {"protected_namespaces": ()}
 
 class PredictionResponse(BaseModel):
     """Response for single prediction"""
@@ -62,9 +66,11 @@ class PredictionResponse(BaseModel):
     confidence: float = Field(..., description="Model confidence (R² score)")
     session_id: str = Field(..., description="User session identifier")
     timestamp: datetime = Field(..., description="Prediction timestamp")
-    model_used: str = Field(..., description="ML model used")
+    ml_model_used: str = Field(..., description="ML model used")
     recommendation: Optional[str] = Field(None, description="Recommendation based on score")
     saved: bool = Field(..., description="Whether prediction was saved to database")
+    
+    model_config = {"protected_namespaces": ()}
 
 class CSVUploadResponse(BaseModel):
     """Response for CSV upload processing"""
@@ -76,6 +82,8 @@ class CSVUploadResponse(BaseModel):
     success_rate: float = Field(..., description="Processing success rate")
     session_id: str = Field(..., description="User session identifier")
     errors: List[str] = Field(default=[], description="Processing errors")
+    
+    model_config = {"protected_namespaces": ()}
 
 class DashboardStats(BaseModel):
     """User dashboard statistics"""
@@ -86,6 +94,8 @@ class DashboardStats(BaseModel):
     total_csv_uploads: int = Field(..., description="Total CSV files uploaded")
     session_created: Optional[datetime] = Field(None, description="Session creation date")
     last_activity: Optional[datetime] = Field(None, description="Last activity date")
+    
+    model_config = {"protected_namespaces": ()}
 
 class AcademicAnalytics(BaseModel):
     """Academic analysis of students (aggregated data only)"""
@@ -95,6 +105,8 @@ class AcademicAnalytics(BaseModel):
     risk_factors: Dict[str, int] = Field(..., description="Risk factors analysis")
     recommendations: List[Dict[str, str]] = Field(..., description="Institutional recommendations")
     analysis_timestamp: datetime = Field(..., description="When analysis was performed")
+    
+    model_config = {"protected_namespaces": ()}
 
 class ScoreDistribution(BaseModel):
     """Score distribution breakdown"""
@@ -102,12 +114,16 @@ class ScoreDistribution(BaseModel):
     regular: int = Field(..., description="Students with score 60-75") 
     excellent: int = Field(..., description="Students with score > 75")
     
+    model_config = {"protected_namespaces": ()}
+    
 class RiskFactors(BaseModel):
     """Risk factors analysis"""
     low_attendance: int = Field(..., description="Students with attendance < 70%")
     insufficient_study: int = Field(..., description="Students with study hours < 10")
     no_tutoring: int = Field(..., description="Students with no tutoring sessions")
     high_risk_combined: int = Field(..., description="Students with multiple risk factors")
+    
+    model_config = {"protected_namespaces": ()}
 
 class ExternalAPIResponse(BaseModel):
     """Response from external API integration"""
@@ -116,6 +132,8 @@ class ExternalAPIResponse(BaseModel):
     data: Dict[str, Any] = Field(..., description="API response data")
     response_time_ms: Optional[int] = Field(None, description="Response time in milliseconds")
     error: Optional[str] = Field(None, description="Error message if failed")
+    
+    model_config = {"protected_namespaces": ()}
 
 class SessionInfo(BaseModel):
     """Session information"""
@@ -124,3 +142,37 @@ class SessionInfo(BaseModel):
     created_at: Optional[datetime] = Field(None, description="Session creation date")
     last_activity: Optional[datetime] = Field(None, description="Last activity date")
     is_new: bool = Field(..., description="Whether this is a new session")
+    
+    model_config = {"protected_namespaces": ()}
+
+class RecommendationRequest(BaseModel):
+    """Request for generating recommendations based on predictions"""
+    predictions: List[Dict[str, Any]] = Field(..., description="List of student predictions")
+    session_id: str = Field(..., description="User session identifier")
+    analysis_type: Optional[str] = Field("general", description="Type of analysis (general, detailed)")
+    
+    model_config = {"protected_namespaces": ()}
+
+class ActionPlanItem(BaseModel):
+    """Individual action plan item"""
+    phase: str = Field(..., description="Phase of implementation")
+    action: str = Field(..., description="Specific action to take")
+    target: str = Field(..., description="Target group or number")
+    responsible: str = Field(..., description="Who is responsible for this action")
+    
+    model_config = {"protected_namespaces": ()}
+
+class RecommendationResponse(BaseModel):
+    """Response with AI-generated recommendations"""
+    status: str = Field(..., description="Status of recommendation generation")
+    total_students: int = Field(..., description="Total students analyzed")
+    average_score: float = Field(..., description="Average predicted score")
+    performance_breakdown: Dict[str, int] = Field(..., description="Performance level breakdown")
+    general_recommendations: str = Field(..., description="AI-generated general recommendations")
+    priority_areas: List[str] = Field(..., description="Priority areas for improvement")
+    action_plan: List[ActionPlanItem] = Field(..., description="Specific action plan")
+    generated_at: datetime = Field(..., description="When recommendations were generated")
+    session_id: str = Field(..., description="User session identifier")
+    note: Optional[str] = Field(None, description="Additional notes or warnings")
+    
+    model_config = {"protected_namespaces": ()}
