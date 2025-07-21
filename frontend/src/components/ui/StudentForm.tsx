@@ -4,7 +4,7 @@ import { StudentFormData } from "@/types/student";
 
 interface StudentFormProps {
   formData: StudentFormData;
-  onChange: (field: keyof StudentFormData, value: any) => void;
+  onChange: (field: keyof StudentFormData, value: string | number) => void;
   onSubmit: () => void;
   loading: boolean;
 }

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import Layout from "@/components/layout/Layout";
 import {
@@ -6,7 +6,7 @@ import {
   PredictionResult,
   BatchPredictionResult,
 } from "@/types/student";
-import { API_ROUTES, FORM_OPTIONS } from "@/constants";
+import { API_ROUTES } from "@/constants";
 import StudentForm from "@/components/ui/StudentForm";
 import PredictionResults from "@/components/ui/PredictionResults";
 import CSVTest from "@/components/ui/CSVTest";
@@ -45,7 +45,7 @@ const PredictorAcademico = () => {
     "individual"
   );
 
-  const handleInputChange = (field: keyof StudentFormData, value: any) => {
+  const handleInputChange = (field: keyof StudentFormData, value: string | number) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -88,9 +88,9 @@ const PredictorAcademico = () => {
   };
 
   const tabs = [
-    { id: "individual", label: "Predicción Individual" },
-    { id: "batch", label: "Análisis por Lotes" },
-    { id: "csv", label: "Datos Reales" },
+    { id: "individual", label: "👤 Predicción Individual", icon: "🎯" },
+    { id: "batch", label: "👥 Análisis por Lotes", icon: "📊" },
+    { id: "csv", label: "📁 Datos Reales", icon: "🧪" },
   ];
 
   return (
@@ -109,7 +109,7 @@ const PredictorAcademico = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="text-center">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Predictor de Rendimiento Académico
+                🎓 Predictor de Rendimiento Académico
               </h1>
               <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                 Sistema inteligente de Machine Learning para la predicción
@@ -129,7 +129,7 @@ const PredictorAcademico = () => {
                 <button
                   key={tab.id}
                   onClick={() => {
-                    setActiveTab(tab.id as any);
+                    setActiveTab(tab.id as "individual" | "batch");
                     resetResults();
                   }}
                   className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${
@@ -138,6 +138,7 @@ const PredictorAcademico = () => {
                       : "bg-white text-gray-700 hover:bg-gray-50 shadow-md hover:shadow-lg"
                   }`}
                 >
+                  <span className="text-lg">{tab.icon}</span>
                   {tab.label}
                 </button>
               ))}
@@ -164,7 +165,7 @@ const PredictorAcademico = () => {
             <div className="space-y-6">
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h3 className="text-xl font-bold text-gray-800 mb-4">
-                  Análisis por Lotes - Datos de Muestra
+                  👥 Análisis por Lotes - Datos de Muestra
                 </h3>
                 <p className="text-gray-600 mb-6">
                   Analiza múltiples estudiantes simultáneamente usando datos
@@ -251,7 +252,7 @@ const PredictorAcademico = () => {
                       Analizando...
                     </span>
                   ) : (
-                    "Analizar Muestra (3 estudiantes)"
+                    "📊 Analizar Muestra (3 estudiantes)"
                   )}
                 </button>
               </div>
@@ -284,7 +285,7 @@ const PredictorAcademico = () => {
           <div className="mt-12 text-center">
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h4 className="text-lg font-semibold text-gray-800 mb-3">
-                Acerca del Modelo
+                🤖 Acerca del Modelo
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div className="bg-blue-50 p-3 rounded-lg">

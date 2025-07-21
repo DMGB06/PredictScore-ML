@@ -5,7 +5,7 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  darkMode: 'class', // Habilitar dark mode con clase
+  darkMode: 'selector', // Actualizado para Tailwind 4
   theme: {
     extend: {
       colors: {

@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { StudentFormData } from "@/types/student";
-import { FORM_OPTIONS } from "@/constants";
 
 interface CSVTestProps {
   onDataLoaded: (data: StudentFormData[]) => void;
@@ -72,7 +71,7 @@ const CSVTest: React.FC<CSVTestProps> = ({ onDataLoaded }) => {
       const dataLines = lines.slice(1, 11); // Take first 10 records for testing
 
       const parsedData = dataLines
-        .map((line, index) => {
+        .map((line) => {
           const row = parseCSVLine(line);
           return mapCSVToFormData(row);
         })

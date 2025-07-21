@@ -106,7 +106,7 @@ export const usePredictionForm = () => {
         setPrediction(mockPrediction);
         setLoading(false);
       }, 2000);
-    } catch (err) {
+    } catch {
       setError("Error al realizar la predicción. Intenta nuevamente.");
       setLoading(false);
     }
