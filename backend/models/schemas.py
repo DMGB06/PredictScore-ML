@@ -124,3 +124,95 @@ class SessionInfo(BaseModel):
     created_at: Optional[datetime] = Field(None, description="Session creation date")
     last_activity: Optional[datetime] = Field(None, description="Last activity date")
     is_new: bool = Field(..., description="Whether this is a new session")
+
+# === AI Recommendations Schemas ===
+
+class PredictionSummary(BaseModel):
+    """Summary of ML prediction for recommendations"""
+    exam_score: float = Field(..., description="Predicted exam score (0-20)")
+    grade_letter: str = Field(..., description="Grade letter (AD, A, B, C)")
+    grade_20: float = Field(..., description="Grade in 20-point scale")
+    grade_100: float = Field(..., description="Grade in 100-point scale")
+    confidence: Optional[float] = Field(None, description="Model confidence (0-1)")
+
+class AIRecommendations(BaseModel):
+    """AI-generated recommendations"""
+    suggestions: List[str] = Field(..., description="List of personalized recommendations")
+    urgency_level: str = Field(..., description="Urgency level: success, warning, error")
+    source: str = Field(..., description="Source of recommendations: openai, fallback")
+    ai_confidence: Optional[float] = Field(None, description="AI confidence in recommendations")
+    tokens_used: Optional[int] = Field(None, description="OpenAI tokens consumed")
+
+class StudentAnalysis(BaseModel):
+    """Analysis of student strengths and areas for improvement"""
+    risk_factors: List[str] = Field(..., description="Identified risk factors")
+    strengths: List[str] = Field(..., description="Student strengths")
+    improvement_areas: List[str] = Field(..., description="Areas needing improvement")
+
+class RecommendationResponse(BaseModel):
+    """Complete AI recommendations response"""
+    success: bool = Field(..., description="Operation success status")
+    prediction: PredictionSummary = Field(..., description="ML prediction summary")
+    recommendations: AIRecommendations = Field(..., description="AI-generated recommendations")
+    analysis: StudentAnalysis = Field(..., description="Student analysis and insights")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "success": True,
+                "prediction": {
+                    "exam_score": 16.5,
+                    "grade_letter": "A",
+                    "grade_20": 16.5,
+                    "grade_100": 82.5,
+                    "confidence": 0.85
+                },
+                "recommendations": {
+                    "suggestions": [
+                        "Incrementa tus horas de estudio a 18-20 semanales",
+                        "Implementa técnicas de estudio activo como mapas mentales",
+                        "Considera sesiones de tutoría para materias específicas"
+                    ],
+                    "urgency_level": "success",
+                    "source": "openai",
+                    "ai_confidence": 0.92,
+                    "tokens_used": 145
+                },
+                "analysis": {
+                    "risk_factors": [
+                        "Horas de estudio ligeramente por debajo del óptimo"
+                    ],
+                    "strengths": [
+                        "Excelente historial académico previo",
+                        "Buenos hábitos de descanso"
+                    ],
+                    "improvement_areas": [
+                        "Incrementar tiempo dedicado al estudio",
+                        "Considerar apoyo académico adicional"
+                    ]
+                }
+            }
+        }
+
+class StudentInput(BaseModel):
+    """Input for recommendations endpoint with student data and prediction results"""
+    prediction: float = Field(..., description="Predicted score (0-20 scale)")
+    student_data: Dict[str, Any] = Field(..., description="Student data used for prediction")
+    analysis: Dict[str, Any] = Field(..., description="Analysis data from prediction")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "prediction": 14.2,
+                "student_data": {
+                    "study_hours": 10,
+                    "attendance": 95,
+                    "previous_scores": 88,
+                    "parental_involvement": "High"
+                },
+                "analysis": {
+                    "letter_grade": "A",
+                    "confidence": "High"
+                }
+            }
+        }

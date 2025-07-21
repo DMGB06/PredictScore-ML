@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import Layout from "@/components/layout/Layout";
 import React, { useCallback } from "react";
 import { useRouter } from "next/router";
@@ -92,7 +91,7 @@ const Home: NextPage = () => {
                     aria-label="Ir al sistema predictivo"
                   >
                     <span className="relative z-10 flex items-center">
-                      Usar Sistema Predictivo
+                      🚀 Iniciar Predicción Académica
                       <svg
                         className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
                         fill="none"
@@ -110,28 +109,6 @@ const Home: NextPage = () => {
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                   </button>
-
-                  <Link href={ROUTES.docs}>
-                    <button className="group bg-white/80 dark:bg-dark-card/80 hover:bg-white dark:hover:bg-dark-card text-blue-700 dark:text-dark-text border-2 border-blue-200 dark:border-dark-border px-8 py-4 rounded-2xl transition-all duration-300 font-semibold backdrop-blur-sm hover:backdrop-blur-md shadow-lg hover:shadow-xl dark:hover:shadow-dark-accent/20 transform hover:-translate-y-1">
-                      <span className="flex items-center">
-                        Ver Documentación
-                        <svg
-                          className="ml-2 w-5 h-5 group-hover:scale-110 transition-transform"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          />
-                        </svg>
-                      </span>
-                    </button>
-                  </Link>
                 </div>
 
                 {/* Stats del Proyecto */}
@@ -270,28 +247,6 @@ const Home: NextPage = () => {
                   </svg>
                 </span>
               </button>
-
-              <Link href={ROUTES.apiDocs}>
-                <button className="group border-2 border-white dark:border-dark-text text-white dark:text-dark-text hover:bg-white hover:text-blue-900 dark:hover:bg-dark-text dark:hover:text-dark-bg px-12 py-5 rounded-2xl transition-all duration-300 font-bold text-xl transform hover:-translate-y-2 hover:scale-105">
-                  <span className="flex items-center">
-                    API Docs
-                    <svg
-                      className="ml-3 w-6 h-6 group-hover:translate-x-2 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                      />
-                    </svg>
-                  </span>
-                </button>
-              </Link>
             </div>
           </div>
         </section>

@@ -33,63 +33,17 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({
     }
   };
 
-  const getRecommendations = (
-    score_100: number,
-    score_20: number,
-    letter: string,
-    confidence: string
-  ) => {
-    const recommendations = [];
-
-    if (letter === "AD") {
-      recommendations.push("Mantener el excelente rendimiento actual");
-      recommendations.push("Considerar programas de enriquecimiento académico");
-      recommendations.push("Puede servir como tutor para otros estudiantes");
-    } else if (letter === "A") {
-      recommendations.push("Seguir mejorando con estrategias de estudio");
-      recommendations.push("Mantener la motivación y disciplina");
-      recommendations.push("Buscar recursos adicionales en áreas específicas");
-    } else if (letter === "B") {
-      recommendations.push("Requiere atención y seguimiento cercano");
-      recommendations.push("Considerar sesiones de tutoría adicionales");
-      recommendations.push("Revisar hábitos de estudio y planificación");
-    } else {
-      // C
-      recommendations.push("Intervención inmediata necesaria");
-      recommendations.push("Involucrar a la familia en el proceso");
-      recommendations.push(
-        "Evaluar factores externos que puedan afectar el rendimiento"
-      );
-      recommendations.push("Implementar plan de apoyo personalizado");
-    }
-
-    if (confidence === "low") {
-      recommendations.push(
-        "Se recomienda recolectar más datos para mayor precisión"
-      );
-    }
-
-    return recommendations;
-  };
-
-  const recommendations = getRecommendations(
-    prediction_100,
-    prediction_20,
-    letter_grade,
-    confidence
-  );
-
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mt-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-gray-800">
-          Resultado de la Predicción
+          📊 Resultados de Predicción Académica
         </h3>
         <button
           onClick={onReset}
-          className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
+          className="px-4 py-2 text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors duration-200 font-medium"
         >
-          Nueva Predicción
+          🔄 Nueva Predicción
         </button>
       </div>
 
@@ -97,7 +51,7 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="text-center">
           <h4 className="text-lg font-semibold text-gray-700 mb-3">
-            Puntuación Predicha
+            🎯 Predicción de Rendimiento
           </h4>
           <PerformanceIndicator
             score={prediction_20}
@@ -159,23 +113,6 @@ const PredictionResults: React.FC<PredictionResultsProps> = ({
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Recomendaciones */}
-      <div className="border-t pt-6">
-        <h4 className="text-lg font-semibold text-gray-800 mb-4">
-          Recomendaciones Personalizadas
-        </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {recommendations.map((recommendation, index) => (
-            <div
-              key={index}
-              className="flex items-start gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors duration-200"
-            >
-              <div className="text-blue-700 text-sm">{recommendation}</div>
-            </div>
-          ))}
         </div>
       </div>
 

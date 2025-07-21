@@ -70,14 +70,16 @@ const StudentForm: React.FC<StudentFormProps> = ({
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
-      <h3 className="text-xl font-bold text-gray-800 mb-6">
+      <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        <span>📝</span>
         Información del Estudiante
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Campos numéricos */}
         <div className="space-y-4">
-          <h4 className="font-semibold text-gray-700 border-b pb-2">
+          <h4 className="font-semibold text-gray-700 border-b pb-2 flex items-center gap-2">
+            <span>📚</span>
             Datos Académicos
           </h4>
           {renderNumericInput("study_hours", "Horas de Estudio", 1, 30, 0.5)}
@@ -108,7 +110,8 @@ const StudentForm: React.FC<StudentFormProps> = ({
 
         {/* Campos categóricos 1 */}
         <div className="space-y-4">
-          <h4 className="font-semibold text-gray-700 border-b pb-2">
+          <h4 className="font-semibold text-gray-700 border-b pb-2 flex items-center gap-2">
+            <span>🏠</span>
             Entorno Familiar
           </h4>
           {renderSelectInput(
@@ -136,7 +139,8 @@ const StudentForm: React.FC<StudentFormProps> = ({
 
         {/* Campos categóricos 2 */}
         <div className="space-y-4">
-          <h4 className="font-semibold text-gray-700 border-b pb-2">
+          <h4 className="font-semibold text-gray-700 border-b pb-2 flex items-center gap-2">
+            <span>🏫</span>
             Entorno Escolar
           </h4>
           {renderSelectInput(
@@ -193,10 +197,13 @@ const StudentForm: React.FC<StudentFormProps> = ({
           {loading ? (
             <span className="flex items-center gap-2">
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              Prediciendo...
+              🔍 Analizando datos...
             </span>
           ) : (
-            "Predecir Rendimiento"
+            <span className="flex items-center gap-2">
+              <span>🧠</span>
+              Predecir Rendimiento Académico
+            </span>
           )}
         </button>
       </div>

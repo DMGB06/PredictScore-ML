@@ -66,6 +66,7 @@ export const ROUTES = {
 export const API_ROUTES = {
   predict: `${APP_CONFIG.apiUrl}/api/v1/predictions/predict`,
   predictBatch: `${APP_CONFIG.apiUrl}/api/v1/predictions/predict-dataset`,
+  recommendations: `${APP_CONFIG.apiUrl}/api/v1/recommendations/generate`,
   health: `${APP_CONFIG.apiUrl}/health`,
 } as const;
 
@@ -137,38 +138,38 @@ export const FORM_OPTIONS = {
   gender: ["Male", "Female"],
 } as const;
 
-// Perfiles predefinidos para autocompletado (OPTIMIZADOS para el modelo actual)
+// Perfiles predefinidos para facilitar el análisis
 export const STUDENT_PROFILES = {
   excellent_ad: {
-    name: "Estudiante Excepcional (AD)",
-    description: "Perfil extremo optimizado para obtener AD (18-20)",
+    name: "Perfil 1",
+    description: "Estudiante con alto rendimiento académico",
     icon: "🏆",
     color: "from-emerald-500 to-emerald-600",
     data: {
-      study_hours: 15, // Extremadamente alto
-      attendance: 100, // Perfecto
-      previous_scores: 98, // Casi perfecto
+      study_hours: 15,
+      attendance: 100,
+      previous_scores: 98,
       parental_involvement: "High",
       access_to_resources: "High",
       extracurricular_activities: "Yes",
       sleep_hours: 8,
       motivation_level: "High",
       internet_access: "Yes",
-      tutoring_sessions: 5, // Muy alto
+      tutoring_sessions: 5,
       family_income: "High",
       teacher_quality: "High",
       school_type: "Private",
       peer_influence: "Positive",
-      physical_activity: 8, // Óptimo
+      physical_activity: 8,
       learning_disabilities: "No",
-      parental_education_level: "PhD", // Máximo nivel
+      parental_education_level: "PhD",
       distance_from_home: "Near",
       gender: "Female",
     },
   },
   good_a: {
-    name: "Estudiante Destacado (A)",
-    description: "Perfil optimizado para obtener A (14-17)",
+    name: "Perfil 2",
+    description: "Estudiante con buen rendimiento académico",
     icon: "⭐",
     color: "from-blue-500 to-blue-600",
     data: {
@@ -176,59 +177,59 @@ export const STUDENT_PROFILES = {
       attendance: 95,
       previous_scores: 88,
       parental_involvement: "High",
-      access_to_resources: "High", // Subido de Medium
+      access_to_resources: "High",
       extracurricular_activities: "Yes",
       sleep_hours: 8,
       motivation_level: "High",
       internet_access: "Yes",
-      tutoring_sessions: 3, // Aumentado
-      family_income: "High", // Subido de Medium
+      tutoring_sessions: 3,
+      family_income: "High",
       teacher_quality: "High",
-      school_type: "Private", // Cambiado de Public
+      school_type: "Private",
       peer_influence: "Positive",
-      physical_activity: 6, // Aumentado
+      physical_activity: 6,
       learning_disabilities: "No",
-      parental_education_level: "Master", // Subido de Bachelor
+      parental_education_level: "Master",
       distance_from_home: "Near",
       gender: "Male",
     },
   },
   average_b: {
-    name: "Estudiante Promedio (B)",
-    description: "Perfil típico que obtiene B (10-13)",
+    name: "Perfil 3",
+    description: "Estudiante con rendimiento estándar",
     icon: "📘",
     color: "from-amber-500 to-amber-600",
     data: {
-      study_hours: 6, // Aumentado de 5
-      attendance: 85, // Aumentado de 80
-      previous_scores: 75, // Aumentado de 70
+      study_hours: 6,
+      attendance: 85,
+      previous_scores: 75,
       parental_involvement: "Medium",
       access_to_resources: "Medium",
-      extracurricular_activities: "Yes", // Cambiado de No
+      extracurricular_activities: "Yes",
       sleep_hours: 7,
       motivation_level: "Medium",
       internet_access: "Yes",
-      tutoring_sessions: 2, // Aumentado de 1
+      tutoring_sessions: 2,
       family_income: "Medium",
       teacher_quality: "Medium",
       school_type: "Public",
-      peer_influence: "Positive", // Cambiado de Neutral
-      physical_activity: 4, // Aumentado de 3
+      peer_influence: "Positive",
+      physical_activity: 4,
       learning_disabilities: "No",
-      parental_education_level: "Bachelor", // Subido de High School
-      distance_from_home: "Near", // Cambiado de Moderate
+      parental_education_level: "Bachelor",
+      distance_from_home: "Near",
       gender: "Female",
     },
   },
   regular_c: {
-    name: "Estudiante en Riesgo (C)",
-    description: "Perfil que obtiene C (0-10) - Necesita apoyo",
+    name: "Perfil 4",
+    description: "Estudiante que requiere apoyo adicional",
     icon: "⚠️",
     color: "from-red-500 to-red-600",
     data: {
-      study_hours: 3, // Aumentado de 2
-      attendance: 70, // Aumentado de 65
-      previous_scores: 60, // Aumentado de 55
+      study_hours: 3,
+      attendance: 70,
+      previous_scores: 60,
       parental_involvement: "Low",
       access_to_resources: "Low",
       extracurricular_activities: "No",
@@ -240,7 +241,7 @@ export const STUDENT_PROFILES = {
       teacher_quality: "Low",
       school_type: "Public",
       peer_influence: "Negative",
-      physical_activity: 2, // Aumentado de 1
+      physical_activity: 2,
       learning_disabilities: "Yes",
       parental_education_level: "High School",
       distance_from_home: "Far",

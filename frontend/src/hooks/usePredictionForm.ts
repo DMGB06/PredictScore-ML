@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export interface StudentData {
   Hours_Studied: string;
@@ -59,17 +59,16 @@ export const usePredictionForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [showGuide, setShowGuide] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    console.log(`🚀 Campo ${name} cambiado a: "${value}"`);
-    console.log('📊 Estado actual:', formData);
-    
+
     setFormData((prev) => {
       const newData = {
         ...prev,
         [name]: value,
       };
-      console.log('✅ Nuevo estado:', newData);
       return newData;
     });
   };
@@ -89,7 +88,9 @@ export const usePredictionForm = () => {
         Tutoring_Sessions: Number(formData.Tutoring_Sessions) || 0,
       };
 
-      console.log('Datos a enviar:', dataToSend);
+      // Enviar datos al servidor
+      // TODO: Usar dataToSend cuando se conecte con el backend real
+      void dataToSend; // Evitar warning de variable no utilizada
 
       // Simulación de respuesta por ahora
       setTimeout(() => {

@@ -139,6 +139,13 @@ PredictScore-ML/
 - **Validación en Tiempo Real**: Feedback inmediato del modelo
 - **Recomendaciones Personalizadas**: Sugerencias específicas por nivel
 
+### 🤖 **Recomendaciones con IA**
+
+- **Análisis Inteligente**: Generación de recomendaciones personalizadas
+- **Integración OpenAI**: Powered by GPT para sugerencias contextuales
+- **Análisis de Factores**: Identificación de fortalezas y áreas de mejora
+- **Fallback Automático**: Sistema robusto con respaldos integrados
+
 ### 🗂️ **Análisis Masivo**
 
 - **Carga CSV**: Procesamiento de archivos hasta 1000+ estudiantes
@@ -261,9 +268,9 @@ Ridge (Modelo Alternativo):
 
 ## 🔮 Funcionalidades Próximas
 
-### 🤖 **Inteligencia Artificial Avanzada**
+### 🤖 **Inteligencia Artificial Avanzada** ✅
 
-- ✨ **Recomendaciones con IA**: Integración con OpenAI GPT para sugerencias personalizadas
+- ✨ **Recomendaciones con IA**: ✅ Integración con OpenAI GPT para sugerencias personalizadas
 - 📝 **Análisis de Texto**: Procesamiento de comentarios y feedback
 - 🎯 **Predicciones Adaptativas**: Modelos que aprenden continuamente
 - 📊 **Insights Automáticos**: Generación automática de reportes

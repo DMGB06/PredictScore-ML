@@ -43,12 +43,10 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Solo páginas existentes */}
           <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2">
-            <NavLink href="/" label="Inicio" />
-            <NavLink href="/predict" label="Predicción" />
-            <NavLink href="/csv-upload" label="CSV" />
-            <NavLink href="/dashboard" label="Dashboard" />
+            <NavLink href="/" label=" Inicio" />
+            <NavLink href="/predictor-academico" label=" Predicción" />
           </nav>
 
           {/* Desktop Controls */}
@@ -101,18 +99,8 @@ const Header = () => {
               onClick={() => setIsMobileMenuOpen(false)}
             />
             <MobileNavLink
-              href="/predict"
-              label="🎯 Predicción Individual"
-              onClick={() => setIsMobileMenuOpen(false)}
-            />
-            <MobileNavLink
-              href="/csv-upload"
-              label="📊 Análisis CSV"
-              onClick={() => setIsMobileMenuOpen(false)}
-            />
-            <MobileNavLink
-              href="/dashboard"
-              label="📈 Dashboard"
+              href="/predictor-academico"
+              label="🎯 Predicción Académica"
               onClick={() => setIsMobileMenuOpen(false)}
             />
           </div>

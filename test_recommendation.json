@@ -1,0 +1,16 @@
+{
+  "Hours_Studied": 15,
+  "Attendance": 85,
+  "Previous_Scores": 75,
+  "Tutoring_Sessions": 2,
+  "Parental_Involvement": "Medium",
+  "Access_to_Resources": "High",
+  "Extracurricular_Activities": "Yes",
+  "Motivation_Level": "High",
+  "Family_Income": "Medium",
+  "Teacher_Quality": "High",
+  "Peer_Influence": "Positive",
+  "Learning_Disabilities": "No",
+  "Parental_Education_Level": "College",
+  "Distance_from_Home": "Near"
+}

@@ -73,6 +73,12 @@ class Settings:
     PLOTLY_USERNAME = os.getenv("PLOTLY_USERNAME", "")
     HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
     
+    # OpenAI Configuration
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+    OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+    OPENAI_MAX_TOKENS = int(os.getenv("OPENAI_MAX_TOKENS", "150"))
+    OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", "0.7"))
+    
     # File upload settings
     MAX_FILE_SIZE_MB = 10
     ALLOWED_FILE_TYPES = [".csv"]

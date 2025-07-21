@@ -30,6 +30,10 @@ from typing import Dict, List, Any, Optional
 from pathlib import Path
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
 
 # Configurar logging optimizado
 logging.basicConfig(
@@ -105,6 +109,114 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+# Importar y registrar rutas
+try:
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+    from routes.recommendations import router as recommendations_router
+    app.include_router(recommendations_router)
+    logger.info("✅ Rutas de recomendaciones registradas")
+except ImportError as e:
+    logger.warning(f"⚠️ No se pudieron cargar las rutas de recomendaciones: {e}")
+    # Agregar endpoint básico de recomendaciones directamente
+    @app.post("/api/v1/recommendations/generate")
+    async def generate_recommendations_basic(data: dict):
+        """Endpoint básico de recomendaciones sin IA externa"""
+        try:
+            # Usar la misma lógica del endpoint de predicción individual
+            # Convertir dict a lista para procesamiento en lotes
+            students_data = [data]
+            
+            # Predecir usando el predictor
+            predictions = await predictor.predict_dataset_async(students_data)
+            if not predictions:
+                raise Exception("No se pudo generar predicción")
+            
+            score = predictions[0]
+            
+            # Generar recomendaciones básicas basadas en la puntuación
+            if score >= 18:
+                suggestions = [
+                    "Mantén tu excelente rendimiento con estudios regulares",
+                    "Considera liderar grupos de estudio para ayudar a otros",
+                    "Explora temas avanzados relacionados con tus materias"
+                ]
+                level = "success"
+            elif score >= 14:
+                suggestions = [
+                    "Incrementa ligeramente tus horas de estudio",
+                    "Revisa y refuerza conceptos fundamentales",
+                    "Considera sesiones de tutoría para temas específicos"
+                ]
+                level = "success"
+            elif score >= 11:
+                suggestions = [
+                    "Aumenta significativamente tu tiempo de estudio",
+                    "Implementa técnicas de estudio más efectivas",
+                    "Busca apoyo académico adicional"
+                ]
+                level = "warning"
+            else:
+                suggestions = [
+                    "Incrementa urgentemente tus horas de estudio",
+                    "Busca tutoría académica especializada",
+                    "Revisa completamente tus métodos de estudio"
+                ]
+                level = "error"
+            
+            # Análisis básico de factores
+            hours_studied = data.get('Hours_Studied', 0)
+            previous_scores = data.get('Previous_Scores', 0)
+            tutoring = data.get('Tutoring_Sessions', 0)
+            
+            risk_factors = []
+            strengths = []
+            improvement_areas = []
+            
+            if hours_studied < 10:
+                risk_factors.append("Horas de estudio insuficientes")
+                improvement_areas.append("Incrementar tiempo de estudio")
+            else:
+                strengths.append("Dedicación adecuada al estudio")
+            
+            if previous_scores < 60:
+                risk_factors.append("Historial académico bajo")
+            elif previous_scores >= 80:
+                strengths.append("Excelente historial académico")
+            
+            if tutoring == 0 and score < 14:
+                improvement_areas.append("Considerar apoyo académico")
+            elif tutoring > 0:
+                strengths.append("Búsqueda de apoyo académico")
+            
+            return {
+                "success": True,
+                "prediction": {
+                    "exam_score": round(score, 2),
+                    "grade_letter": "AD" if score >= 18 else "A" if score >= 14 else "B" if score >= 11 else "C",
+                    "grade_20": round(score, 2),
+                    "grade_100": round(score * 5, 2)
+                },
+                "recommendations": {
+                    "suggestions": suggestions,
+                    "urgency_level": level,
+                    "source": "fallback"
+                },
+                "analysis": {
+                    "risk_factors": risk_factors if risk_factors else ["Ningún factor de riesgo identificado"],
+                    "strengths": strengths if strengths else ["Análisis en progreso"],
+                    "improvement_areas": improvement_areas if improvement_areas else ["Mantener el rendimiento actual"]
+                }
+            }
+        except Exception as e:
+            logger.error(f"Error generando recomendaciones: {e}")
+            raise HTTPException(status_code=500, detail=f"Error generando recomendaciones: {str(e)}")
+    
+    logger.info("✅ Endpoint básico de recomendaciones registrado")
+except Exception as e:
+    logger.error(f"❌ Error registrando rutas de recomendaciones: {e}")
 
 # Importar dependencias ML
 import joblib
